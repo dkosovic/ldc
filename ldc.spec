@@ -71,7 +71,7 @@ rm %{buildroot}%{_prefix}/lib/.empty
 
 mv %{buildroot}%{_bindir}/ldc.rebuild.conf  %{buildroot}%{_sysconfdir}/ldc.rebuild.conf
 mv %{buildroot}%{_bindir}/ldc.conf          %{buildroot}%{_sysconfdir}/ldc.conf
-install --mode=0644 %{SOURCE1}              %{buildroot}%{_sysconfdir}/rpm/maros.ldc
+install --mode=0644 %{SOURCE1}              %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 
 sed -i "s|-I.*/../tango\"|-I%{_includedir}/d/tango\"|" %{buildroot}%{_sysconfdir}/ldc.conf
 sed -i "/^.*-I.*%{name}-%{alphatag}%{hg_revision}\/..\/tango\/user.*$/d" %{buildroot}%{_sysconfdir}/ldc.conf
@@ -96,7 +96,7 @@ rm -rf %{buildroot}
 %{_bindir}/ldmd
 %config(noreplace) %{_sysconfdir}/ldc.rebuild.conf
 %config(noreplace) %{_sysconfdir}/ldc.conf
-%config(noreplace) %{_sysconfdir}/rpm/maco.ldc
+%config(noreplace) %{_sysconfdir}/rpm/macros.ldc
 
 %config(noreplace)
 %changelog
