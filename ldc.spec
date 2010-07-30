@@ -8,7 +8,7 @@
 
 Name:       ldc
 Version:    0.9.2
-Release:    8.%{alphatag}%{hg_revision}%{?dist}
+Release:    9.%{alphatag}%{hg_revision}%{?dist}
 Summary:    It is a compiler for the D programming language
 
 Group:      Development/Languages    
@@ -23,7 +23,7 @@ BuildRequires:  libconfig
 BuildRequires:  cmake
 BuildRequires:  libconfig-devel
 BuildRequires:  gc
-Requires:  	gcc
+Requires:       gcc
 Requires:       libconfig
 
 %description
@@ -66,21 +66,21 @@ make install DESTDIR=%{buildroot}
 
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 # This empty file is removed because it's never used. "lib" is explicitely used
-# instead of %_libdir because it's always used (not arch dependant)
+# instead of %%_libdir because it's always used (not arch dependant)
 rm %{buildroot}%{_prefix}/lib/.empty
 
 mv %{buildroot}%{_bindir}/ldc.rebuild.conf  %{buildroot}%{_sysconfdir}/ldc.rebuild.conf
 mv %{buildroot}%{_bindir}/ldc.conf          %{buildroot}%{_sysconfdir}/ldc.conf
 install --mode=0644 %{SOURCE1}              %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 
-sed -i "s|-I.*/../tango\"|-I%{_d_includedir}/tango\"|" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "/^.*-I.*%{name}-%{alphatag}%{hg_revision}\/..\/tango\/user.*$/d" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "/^.*-I.*%{name}-%{alphatag}%{hg_revision}\/..\/tango\/lib\/common.*$/d" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "s|-I.*/../tango/tango/core/vendor|-I%{_d_includedir}/tango/core/vendor|" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "s|-L-L\%\%ldcbinarypath\%\%/../lib|-L-L%{_libdir}/tango|" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "s|-defaultlib=tango-user-ldc|-defaultlib=tango|" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "s|-debuglib=tango-user-ldc|-debuglib=tango|" %{buildroot}%{_sysconfdir}/ldc.conf
-sed -i "13a \ \ \ \ \ \ \ \ \"-I%{_d_includedir}/\"," %{buildroot}%{_sysconfdir}/ldc.conf
+sed -i -e   "s|-I.*/../tango\"|-I%{_d_includedir}/tango\"|"                             \
+    -e      "/^.*-I.*%{name}-%{alphatag}%{hg_revision}\/..\/tango\/user.*$/d"           \
+    -e      "/^.*-I.*%{name}-%{alphatag}%{hg_revision}\/..\/tango\/lib\/common.*$/d"    \
+    -e      "s|-I.*/../tango/tango/core/vendor|-I%{_d_includedir}/tango/core/vendor|"   \
+    -e      "s|-L-L\%\%ldcbinarypath\%\%/../lib|-L-L%{_d_libdir}|"                      \
+    -e      "s|-defaultlib=tango-user-ldc|-defaultlib=tango|"                           \
+    -e      "s|-debuglib=tango-user-ldc|-debuglib=tango|"                               \
+    -e      "13a \ \ \ \ \ \ \ \ \"-I%{_d_includedir}/\"," %{buildroot}%{_sysconfdir}/ldc.conf
 
 sed -i "s|DFLAGS.*|DFLAGS=-I/usr/include/d -L-L/usr/lib/d -d-version=Tango -defaultlib=tango -debuglib=tango|" %{buildroot}%{_sysconfdir}/ldc.rebuild.conf
 
@@ -96,10 +96,13 @@ rm -rf %{buildroot}
 %{_bindir}/ldmd
 %config(noreplace)  %{_sysconfdir}/ldc.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc.conf
-%config             %{_sysconfdir}/rpm/macros.ldc
+%config(noreplace)  %{_sysconfdir}/rpm/macros.ldc
 
-%config(noreplace)
 %changelog
+* Fri Jul 29 2010 Jonathan MERCIER <bioinfornatics at gmail.com> 0.9.2-9.20100609hg1653
+- add %%{_d_libdir} macro in macros.ldc
+- fix lib path in ldc.conf
+
 * Wed Jul 28  2010 Jonathan MERCIER <bioinfornatics at gmail.com> 0.9.2-8.20100609hg1653
 - Using macro for D package
 
