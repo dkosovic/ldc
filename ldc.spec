@@ -13,7 +13,7 @@
 
 Name:           ldc
 Version:        2
-Release:        3.%{alphatag}%{git_revision}%{?dist}
+Release:        4.%{alphatag}%{git_revision}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -57,6 +57,19 @@ LDC compile déjà une grande quantité de code D, mais doit encore être consid
 en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
 implémenter.
 
+%package        ldc-devel
+Summary:        Support for developing D application
+Group:          Development/Tools
+Requires:       %{name} =  %{version}-%{release}
+
+%description ldc-devel
+The ldc-devel package contains header files for developing D
+applications that use ldc.
+
+%description ldc-devel -l fr
+Le paquet ldc-devel contient les fichiers d'entêtes pour développer
+des applications en D utilisant ldc.
+
 %package        druntime
 Summary:        Runtime lirary for D
 Group:          Development/Tools
@@ -74,6 +87,21 @@ Druntime est la bibliothèque minimal requise pour supporter la programmation en
 D. Est inclut le code système requis pour supporter le ramasse miette, tableau
 associatif, gestion des exceptions, opertation sur des vecteurs,
 démarage/extinction, etc
+
+
+%package        druntime-devel
+Summary:        Support for developing D application
+Group:          Development/Tools
+Requires:       %{name} =  %{version}-%{release}
+
+
+%description druntime-devel
+The druntime-devel package contains header files for developing D
+applications that use druntime.
+
+%description druntime-devel -l fr
+Le paquet druntime-devel contient les fichiers d'entêtes pour développer
+des applications en D utilisant druntime.
 
 %package        phobos
 Summary:        Standard Runtime Library
@@ -95,6 +123,27 @@ suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
 pas une religion, c'est un langage de programmation, et il reconnaît que,
 parfois, les objectifs sont contradictoire et contre-productive dans certaines
 situations, et les programmeurs doivent implémenter d'une certaines manière.
+
+
+%description phobos -l fr
+Chaque module de Phobos est conforme autant que possible à la conception
+suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
+pas une religion, c'est un langage de programmation, et il reconnaît que,
+parfois, les objectifs sont contradictoire et contre-productive dans certaines
+situations, et les programmeurs doivent implémenter d'une certaines manière.
+
+%package        phobos-devel
+Summary:        Support for developing D application
+Group:          Development/Tools
+Requires:       %{name} =  %{version}-%{release}
+
+%description phobos-devel
+The phobos-devel package contains header files for developing D
+applications that use phobos.
+
+%description phobos-devel -l fr
+Le paquet phobos-devel contient les fichiers d'entêtes pour développer
+des applications en D utilisant phobos.
 
 %prep
 %setup -q -n %{name}-%{err_alphatag}%{git_revision}
@@ -154,26 +203,37 @@ rm -rf %{buildroot}
 %doc LICENSE readme.txt
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
-%{_includedir}/d/core
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
 
+%files ldc-devel
+%{_includedir}/d/core
+
 %files druntime
 %defattr(-,root,root,-)
 %doc druntime/LICENSE_1_0.txt druntime/README.txt
+%{_libdir}/libdruntime-ldc.so
+
+%files druntime-devel
+%defattr(-,root,root,-)
 %{_includedir}/d/ldc
 %{_includedir}/d/object.di
 %{_includedir}/d/std/intrinsic.di
-%{_libdir}/libdruntime-ldc.so
 
 %files phobos
 %defattr(-,root,root,-)
 %doc phobos/LICENSE_1_0.txt
 %{_libdir}/liblphobos2.so
+
+%files phobos-devel
+%defattr(-,root,root,-)
 %{_includedir}/d/std
 
 %changelog
+* Sat Aug 4 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-4.20110801git58d40d2
+- add devel packages
+
 * Wed Aug  3 2011 Michel Salim <salimma@fedoraproject.org> - 2-3.20110801git58d40d2
 - Rebuild against final LLVM 2.9 release
 
