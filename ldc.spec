@@ -152,10 +152,10 @@ Requires:       %{name} =  %{version}-%{release}
 BuildRequires:  geany
 Requires:       geany
 
-%description ldc-phobos-geany-tags
+%description phobos-geany-tags
 Enable autocompletion for phobos library in geany (IDE)
 
-%description -l fr ldc-phobos-geany-tags
+%description -l fr phobos-geany-tags
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
 %prep
