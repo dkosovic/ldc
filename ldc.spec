@@ -145,6 +145,14 @@ applications that use phobos.
 Le paquet phobos-devel contient les fichiers d'entêtes pour développer
 des applications en D utilisant phobos.
 
+%package phobos-geany-tags
+Summary:        Support for enable autocompletion in geany
+Group:          Development/Tools
+Requires:       %{name} =  %{version}-%{release}
+BuildRequires:  geany
+Requires:       geany
+
+
 %prep
 %setup -q -n %{name}-%{err_alphatag}%{git_revision}
 find . -type f -exec sed -i 's/\r//g' {} \;
@@ -158,6 +166,9 @@ sed -i.multilib -e 's|config.h|config-%{__isa_bits}.h|' CMakeLists.txt
 
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
+# generate geany tags
+geany -g phobos.d.tags $(find phobos/std -name "*.d")
+
 %install
 rm -rf %{buildroot}
 #make %{?_smp_mflags} install DESTDIR=%{buildroot}
@@ -166,6 +177,7 @@ mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 mkdir -p %{buildroot}/%{_includedir}/d
 mkdir -p %{buildroot}/%{_libdir}/
 mkdir -p %{buildroot}/%{_includedir}/d/std
+mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 
 # This empty file is removed because it's never used. "lib" is explicitely used
 # instead of %%_libdir because it's always used (not arch dependant)
@@ -194,6 +206,9 @@ cp -rp druntime/import/* %{buildroot}/%{_includedir}/d/
 # phobos
 cp -rp phobos/std %{buildroot}/%{_includedir}/d/
 install lib/liblphobos2.so %{buildroot}/%{_libdir}/liblphobos2.so
+
+# geany tags
+install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %clean
 rm -rf %{buildroot}
@@ -230,7 +245,14 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_includedir}/d/std
 
+%files phobos-geany-tags
+%defattr(-,root,root,-)
+%{_datadir}/geany/tags/phobos.d.tags
+
 %changelog
+* Sun Aug 5 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-5.20110801git58d40d2
+- add phobos-geany-tags package
+
 * Sat Aug 4 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-4.20110801git58d40d2
 - add devel packages
 
