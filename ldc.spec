@@ -164,7 +164,8 @@ find . -type f -exec sed -i 's/\r//g' {} \;
 # config.h is renamed in Fedora to allow for 32- and 64-bit llvm-devel to
 # coexist; look for the appropriate file
 sed -i.multilib -e 's|config.h|config-%{__isa_bits}.h|' CMakeLists.txt
-#%patch0 -p1
+# temp geany config directory for allow geany to generate tags
+mkdir geany_config
 
 %build
 %cmake -DD_VERSION:STRING=2 -DCONF_INST_DIR:PATH=%{_sysconfdir} -DRUNTIME_DIR=./druntime -DPHOBOS2_DIR=./phobos .
@@ -172,7 +173,7 @@ sed -i.multilib -e 's|config.h|config-%{__isa_bits}.h|' CMakeLists.txt
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
 # generate geany tags
-geany -g phobos.d.tags $(find phobos/std -name "*.d")
+geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
 
 %install
 rm -rf %{buildroot}
@@ -217,6 +218,15 @@ install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %clean
 rm -rf %{buildroot}
+
+
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%post druntime -p /sbin/ldconfig
+%postun druntime -p /sbin/ldconfig
+%post phobos -p /sbin/ldconfig
+%postun phobos -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root,-)
