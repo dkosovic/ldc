@@ -140,12 +140,27 @@ applications that use phobos.
 Le paquet phobos-devel contient les fichiers d'entêtes pour développer
 des applications en D utilisant phobos.
 
+%package phobos-geany-tags
+Summary:        Support for enable autocompletion in geany
+Group:          Development/Tools
+Requires:       %{name} =  %{version}-%{release}
+BuildRequires:  geany
+Requires:       geany
+
+%description phobos-geany-tags
+Enable autocompletion for phobos library in geany (IDE)
+
+%description -l fr phobos-geany-tags
+Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
+
 %prep
 %setup -q -n %{name}-%{alphatag}
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
 %setup -q -T -D -a 2 -n %{name}-%{alphatag}
 %patch0 -p1 -b .fix
 find . -type f -exec sed -i 's/\r//g' {} \;
+# temp geany config directory for allow geany to generate tags
+mkdir geany_config
 
 %build
 %cmake  -DD_VERSION:STRING=2                        \
@@ -182,6 +197,13 @@ ln %{buildroot}%{_bindir}/ldc2	%{buildroot}%{_bindir}/ldc
 %clean
 rm -rf %{buildroot}
 
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%post druntime -p /sbin/ldconfig
+%postun druntime -p /sbin/ldconfig
+%post phobos -p /sbin/ldconfig
+%postun phobos -p /sbin/ldconfig
+
 %files
 %defattr(-,root,root,-)
 %doc LICENSE readme.txt
@@ -210,6 +232,10 @@ rm -rf %{buildroot}
 %files phobos-devel
 %defattr(-,root,root,-)
 %{_includedir}/d/phobos
+
+%files phobos-geany-tags
+%defattr(-,root,root,-)
+%{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
 * Sat Sep 17 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-4.20110915git423076d
