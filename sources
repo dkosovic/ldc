@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 8fed5536592380a90e3e6f3748bcc364  ldc-20110901git58d40d2.tar.xz
+=======
+933b6891b9d7079984d69a0c5e5bb908  ldc_fix_build.patch
+6f58232c2a7553dd25ee10cc5290bd19  ldc-20110915git423076d.tar.xz
+bddc6dc464f0be3cfd887400052de9d4  ldc-druntime-20110915gitfba10fa.tar.xz
+651c18c92efe41b42ecbc1e44ddc0218  ldc-phobos-20110915gita8106d9.tar.xz
+79c203a287c764bed1e612d7b77e1901  macros.ldc
+>>>>>>> f844d0f... Update to latest revision

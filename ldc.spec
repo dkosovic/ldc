@@ -1,9 +1,22 @@
+<<<<<<< HEAD
 %global     alphatag        20110801
 # incorrect tarball name
 %global     err_alphatag    20110901
 %global     git_revision    git58d40d2
 
 # The source for this package was pulled from upstream's subversion (svn).
+=======
+#%global debug_package %{nil}
+%global     snapdate        20110915
+%global     ldc_rev         423076d
+%global     phobos_rev      a8106d9
+%global     druntime_rev    fba10fa
+%global     alphatag        %{snapdate}git%{ldc_rev}
+%global     phobostag       %{snapdate}git%{phobos_rev}
+%global     druntimetag     %{snapdate}git%{druntime_rev}
+
+# The source for this package was pulled from upstream's git.
+>>>>>>> f844d0f... Update to latest revision
 # Use the following commands to generate the tarball:
 # git rev-parse --short HEAD -> for get hash
 # git clone git://github.com/bioinfornatics/ldc2.git ldc-20110901git58d40d2
@@ -168,12 +181,24 @@ sed -i.multilib -e 's|config.h|config-%{__isa_bits}.h|' CMakeLists.txt
 mkdir geany_config
 
 %build
+<<<<<<< HEAD
 %cmake -DD_VERSION:STRING=2 -DCONF_INST_DIR:PATH=%{_sysconfdir} -DRUNTIME_DIR=./druntime -DPHOBOS2_DIR=./phobos .
 
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
+=======
+%cmake  -DD_VERSION:STRING=2                        \
+        -DCONF_INST_DIR:PATH=%{_sysconfdir}         \
+        -DRUNTIME_DIR=./druntime                    \
+        -DPHOBOS2_DIR=./phobos                      \
+        -DD_FLAGS:STRING="-O2;-g;-w;-d;-release"    \
+        -DLLVM_CONFIG_HEADER=config-%{__isa_bits}.h \
+        -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d \
+        .
+make  VERBOSE=2 phobos2
+>>>>>>> f844d0f... Update to latest revision
 
 %install
 rm -rf %{buildroot}
@@ -193,6 +218,7 @@ install --mode=0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 
 sed -i \
     -e      "10a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\","        \
+<<<<<<< HEAD
     -e      "/^.*-I.*%{name}-%{alphatag}%{git_revision}.*$/d"   \
     -e      "s/-L-L.*lib/-L-L$(%{_libdir})\/druntime.so/"       bin/ldc2.conf 
 
@@ -215,6 +241,16 @@ install lib/liblphobos2.so %{buildroot}/%{_libdir}/liblphobos2.so
 
 # geany tags
 install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
+=======
+    -e      "11a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/phobos\","\
+    -e      "12a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/ldc\","   \
+    -e      "/^.*-I.*%{name}-%{alphatag}.*$/d"                  \
+    -e      "s|-L-L.*lib|-L-L%{_libdir}/druntime.so|"       %{buildroot}/%{_sysconfdir}/ldc2.conf
+
+sed -i "s|DFLAGS.*|DFLAGS=-I%{_includedir}/d -L-L%{_libdir} -d-version=Phobos -defaultlib=phobos2 -debuglib=phobos2|" bin/ldc2.rebuild.conf
+
+ln %{buildroot}%{_bindir}/ldc2	%{buildroot}%{_bindir}/ldc
+>>>>>>> f844d0f... Update to latest revision
 
 %clean
 rm -rf %{buildroot}
@@ -236,8 +272,14 @@ rm -rf %{buildroot}
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
+<<<<<<< HEAD
 
 %files ldc-devel
+=======
+%{_bindir}/ldc
+%{_bindir}/ldc2
+%{_bindir}/ldmd2
+>>>>>>> f844d0f... Update to latest revision
 %{_includedir}/d/core
 
 %files druntime
@@ -248,8 +290,11 @@ rm -rf %{buildroot}
 %files druntime-devel
 %defattr(-,root,root,-)
 %{_includedir}/d/ldc
+<<<<<<< HEAD
 %{_includedir}/d/object.di
 %{_includedir}/d/std/intrinsic.di
+=======
+>>>>>>> f844d0f... Update to latest revision
 
 %files phobos
 %defattr(-,root,root,-)
@@ -258,11 +303,15 @@ rm -rf %{buildroot}
 
 %files phobos-devel
 %defattr(-,root,root,-)
+<<<<<<< HEAD
 %{_includedir}/d/std
 
 %files phobos-geany-tags
 %defattr(-,root,root,-)
 %{_datadir}/geany/tags/phobos.d.tags
+=======
+%{_includedir}/d/phobos
+>>>>>>> f844d0f... Update to latest revision
 
 %changelog
 * Sun Aug 5 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-5.20110801git58d40d2
