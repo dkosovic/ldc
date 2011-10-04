@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-%global     alphatag        20110801
-# incorrect tarball name
-%global     err_alphatag    20110901
-%global     git_revision    git58d40d2
-
-# The source for this package was pulled from upstream's subversion (svn).
-=======
 #%global debug_package %{nil}
 %global     snapdate        20110915
 %global     ldc_rev         423076d
@@ -16,17 +8,24 @@
 %global     druntimetag     %{snapdate}git%{druntime_rev}
 
 # The source for this package was pulled from upstream's git.
->>>>>>> f844d0f... Update to latest revision
 # Use the following commands to generate the tarball:
-# git rev-parse --short HEAD -> for get hash
-# git clone git://github.com/bioinfornatics/ldc2.git ldc-20110901git58d40d2
-# (cd ldc-20110901git58d40d2; git checkout 161823bef25fa366677d; git submodule init; git submodule update)
-# find ldc-20110901git58d40d2 -name ".git" -print0 | xargs -0 rm -fr
-# tar cJvf ldc-20110901git58d40d2.tar.xz ldc-20110901git58d40d2
+# cd ldc; git rev-parse --short HEAD            -> for ldc_rev
+# cd ldc/phobos; git rev-parse --short HEAD     -> for phobos_rev
+# cd ldc/druntime/;  git rev-parse --short HEAD -> for druntime_rev
+# git clone https://github.com/ldc-developers/ldc.git
+# (cd ldc; git checkout 423076d; git submodule init; git submodule update; \
+#  git archive --prefix=ldc-%%{alphatag}/ HEAD \
+# ) | xz > ldc-%%{alphatag}.xz
+# (cd ldc/druntime; \
+#  git archive --prefix=druntime/ HEAD \
+# ) | xz > ldc-druntime-%%{druntimetag}.xz
+# (cd ldc/phobos; \
+#  git archive --prefix=phobos/ HEAD \
+# ) | xz > ldc-phobos-%%{phobostag}.xz
 
 Name:           ldc
 Version:        2
-Release:        4.%{alphatag}%{git_revision}%{?dist}
+Release:        4.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -34,15 +33,19 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD    
 URL:            http://www.dsource.org/projects/ldc
-Source0:        %{name}-%{err_alphatag}%{git_revision}.tar.xz
-Source1:        macros.%{name}
+Source0:        %{name}-%{alphatag}.tar.xz
+Source1:        %{name}-phobos-%{phobostag}.tar.xz
+Source2:        %{name}-druntime-%{druntimetag}.tar.xz
+Source3:        macros.%{name}
+# fix current build system report to upstream done
+Patch0:         %{name}_fix_build.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  llvm-devel >= 2.9
+#BuildRequires:  llvm-devel >= 2.9
 BuildRequires:  libconfig, libconfig-devel
 BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
-Requires:       libconfig
+BuildRequires:  llvm-devel
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -70,21 +73,8 @@ LDC compile déjà une grande quantité de code D, mais doit encore être consid
 en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
 implémenter.
 
-%package        ldc-devel
-Summary:        Support for developing D application
-Group:          Development/Tools
-Requires:       %{name} =  %{version}-%{release}
-
-%description ldc-devel
-The ldc-devel package contains header files for developing D
-applications that use ldc.
-
-%description ldc-devel -l fr
-Le paquet ldc-devel contient les fichiers d'entêtes pour développer
-des applications en D utilisant ldc.
-
 %package        druntime
-Summary:        Runtime lirary for D
+Summary:        Runtime library for D
 Group:          Development/Tools
 License:        Boost
 Requires:       %{name} =  %{version}-%{release}
@@ -137,14 +127,6 @@ pas une religion, c'est un langage de programmation, et il reconnaît que,
 parfois, les objectifs sont contradictoire et contre-productive dans certaines
 situations, et les programmeurs doivent implémenter d'une certaines manière.
 
-
-%description phobos -l fr
-Chaque module de Phobos est conforme autant que possible à la conception
-suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
-pas une religion, c'est un langage de programmation, et il reconnaît que,
-parfois, les objectifs sont contradictoire et contre-productive dans certaines
-situations, et les programmeurs doivent implémenter d'une certaines manière.
-
 %package        phobos-devel
 Summary:        Support for developing D application
 Group:          Development/Tools
@@ -158,37 +140,14 @@ applications that use phobos.
 Le paquet phobos-devel contient les fichiers d'entêtes pour développer
 des applications en D utilisant phobos.
 
-%package phobos-geany-tags
-Summary:        Support for enable autocompletion in geany
-Group:          Development/Tools
-Requires:       %{name} =  %{version}-%{release}
-BuildRequires:  geany
-Requires:       geany
-
-%description phobos-geany-tags
-Enable autocompletion for phobos library in geany (IDE)
-
-%description -l fr phobos-geany-tags
-Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
-
 %prep
-%setup -q -n %{name}-%{err_alphatag}%{git_revision}
+%setup -q -n %{name}-%{alphatag}
+%setup -q -T -D -a 1 -n %{name}-%{alphatag}
+%setup -q -T -D -a 2 -n %{name}-%{alphatag}
+%patch0 -p1 -b .fix
 find . -type f -exec sed -i 's/\r//g' {} \;
-# config.h is renamed in Fedora to allow for 32- and 64-bit llvm-devel to
-# coexist; look for the appropriate file
-sed -i.multilib -e 's|config.h|config-%{__isa_bits}.h|' CMakeLists.txt
-# temp geany config directory for allow geany to generate tags
-mkdir geany_config
 
 %build
-<<<<<<< HEAD
-%cmake -DD_VERSION:STRING=2 -DCONF_INST_DIR:PATH=%{_sysconfdir} -DRUNTIME_DIR=./druntime -DPHOBOS2_DIR=./phobos .
-
-make %{?_smp_mflags} VERBOSE=2 phobos2
-
-# generate geany tags
-geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
-=======
 %cmake  -DD_VERSION:STRING=2                        \
         -DCONF_INST_DIR:PATH=%{_sysconfdir}         \
         -DRUNTIME_DIR=./druntime                    \
@@ -197,51 +156,20 @@ geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
         -DLLVM_CONFIG_HEADER=config-%{__isa_bits}.h \
         -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d \
         .
-make  VERBOSE=2 phobos2
->>>>>>> f844d0f... Update to latest revision
+make %{?_smp_mflags} VERBOSE=2 phobos2
+
+# generate geany tags
+geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
 
 %install
 rm -rf %{buildroot}
-#make %{?_smp_mflags} install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{_bindir}/
+make %{?_smp_mflags} install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
-mkdir -p %{buildroot}/%{_includedir}/d
-mkdir -p %{buildroot}/%{_libdir}/
-mkdir -p %{buildroot}/%{_includedir}/d/std
-mkdir -p %{buildroot}/%{_datadir}/geany/tags/
-
-# This empty file is removed because it's never used. "lib" is explicitely used
-# instead of %%_libdir because it's always used (not arch dependant)
-#rm %{buildroot}%{_prefix}/lib/.empty
-
-install --mode=0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
+mkdir -p %{buildroot}/%{_includedir}/d/ldc
+install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 
 sed -i \
     -e      "10a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\","        \
-<<<<<<< HEAD
-    -e      "/^.*-I.*%{name}-%{alphatag}%{git_revision}.*$/d"   \
-    -e      "s/-L-L.*lib/-L-L$(%{_libdir})\/druntime.so/"       bin/ldc2.conf 
-
-sed -i "s|DFLAGS.*|DFLAGS=-I%{_includedir}/d -L-L%{_libdir} -d-version=Phobos -defaultlib=phobos2 -debuglib=phobos2|" bin/ldc2.rebuild.conf
-
-# ldc
-cp -rp import/*                 %{buildroot}/%{_includedir}/d
-install bin/ldc2.conf           %{buildroot}%{_sysconfdir}/ldc2.conf
-install bin/ldc2.rebuild.conf   %{buildroot}%{_sysconfdir}/ldc2.rebuild.conf
-install -m0755 bin/ldmd2        %{buildroot}%{_bindir}/ldmd2
-install -m0755 bin/ldc2         %{buildroot}%{_bindir}/ldc2
-
-# druntime
-install lib/libdruntime-ldc.so %{buildroot}/%{_libdir}/libdruntime-ldc.so
-cp -rp druntime/import/* %{buildroot}/%{_includedir}/d/
-
-# phobos
-cp -rp phobos/std %{buildroot}/%{_includedir}/d/
-install lib/liblphobos2.so %{buildroot}/%{_libdir}/liblphobos2.so
-
-# geany tags
-install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
-=======
     -e      "11a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/phobos\","\
     -e      "12a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/ldc\","   \
     -e      "/^.*-I.*%{name}-%{alphatag}.*$/d"                  \
@@ -250,36 +178,19 @@ install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 sed -i "s|DFLAGS.*|DFLAGS=-I%{_includedir}/d -L-L%{_libdir} -d-version=Phobos -defaultlib=phobos2 -debuglib=phobos2|" bin/ldc2.rebuild.conf
 
 ln %{buildroot}%{_bindir}/ldc2	%{buildroot}%{_bindir}/ldc
->>>>>>> f844d0f... Update to latest revision
 
 %clean
 rm -rf %{buildroot}
 
-
-
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%post druntime -p /sbin/ldconfig
-%postun druntime -p /sbin/ldconfig
-%post phobos -p /sbin/ldconfig
-%postun phobos -p /sbin/ldconfig
-
 %files
 %defattr(-,root,root,-)
 %doc LICENSE readme.txt
-%{_bindir}/ldc2
-%{_bindir}/ldmd2
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
-<<<<<<< HEAD
-
-%files ldc-devel
-=======
 %{_bindir}/ldc
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
->>>>>>> f844d0f... Update to latest revision
 %{_includedir}/d/core
 
 %files druntime
@@ -290,11 +201,6 @@ rm -rf %{buildroot}
 %files druntime-devel
 %defattr(-,root,root,-)
 %{_includedir}/d/ldc
-<<<<<<< HEAD
-%{_includedir}/d/object.di
-%{_includedir}/d/std/intrinsic.di
-=======
->>>>>>> f844d0f... Update to latest revision
 
 %files phobos
 %defattr(-,root,root,-)
@@ -303,22 +209,11 @@ rm -rf %{buildroot}
 
 %files phobos-devel
 %defattr(-,root,root,-)
-<<<<<<< HEAD
-%{_includedir}/d/std
-
-%files phobos-geany-tags
-%defattr(-,root,root,-)
-%{_datadir}/geany/tags/phobos.d.tags
-=======
 %{_includedir}/d/phobos
->>>>>>> f844d0f... Update to latest revision
 
 %changelog
-* Sun Aug 5 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-5.20110801git58d40d2
-- add phobos-geany-tags package
-
-* Sat Aug 4 2011 Jonathan MERCIER <bioinfornatics at gmail.com> 2-4.20110801git58d40d2
-- add devel packages
+* Sat Sep 17 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-4.20110915git423076d
+- Update to latest revision
 
 * Wed Aug  3 2011 Michel Salim <salimma@fedoraproject.org> - 2-3.20110801git58d40d2
 - Rebuild against final LLVM 2.9 release
