@@ -1,8 +1,8 @@
 #%global debug_package %{nil}
-%global     snapdate        20110915
-%global     ldc_rev         423076d
+%global     snapdate        20110911
+%global     ldc_rev         3cf958a
 %global     phobos_rev      a8106d9
-%global     druntime_rev    fba10fa
+%global     druntime_rev    367dbb7
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -13,19 +13,19 @@
 # cd ldc/phobos; git rev-parse --short HEAD     -> for phobos_rev
 # cd ldc/druntime/;  git rev-parse --short HEAD -> for druntime_rev
 # git clone https://github.com/ldc-developers/ldc.git
-# (cd ldc; git checkout 423076d; git submodule init; git submodule update; \
-#  git archive --prefix=ldc-%%{alphatag}/ HEAD \
-# ) | xz > ldc-%%{alphatag}.xz
-# (cd ldc/druntime; \
-#  git archive --prefix=druntime/ HEAD \
-# ) | xz > ldc-druntime-%%{druntimetag}.xz
-# (cd ldc/phobos; \
-#  git archive --prefix=phobos/ HEAD \
-# ) | xz > ldc-phobos-%%{phobostag}.xz
+# (cd ldc; git checkout 3cf958a; git submodule init; git submodule update;          \
+#  git archive --prefix=ldc-%%{alphatag}/ HEAD | xz > ../ldc-%%{alphatag}.xz        \
+# ) 
+# (cd ldc/druntime;                                                                 \
+#  git archive --prefix=druntime/ HEAD | xz > ../../ldc-druntime-%%{druntimetag}.xz \
+# )
+# (cd ldc/phobos;                                                                   \
+#  git archive --prefix=phobos/ HEAD | xz > ../../ldc-phobos-%%{phobostag}.xz       \
+# )
 
 Name:           ldc
 Version:        2
-Release:        4.%{alphatag}%{?dist}
+Release:        5.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -33,15 +33,13 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD    
 URL:            http://www.dsource.org/projects/ldc
-Source0:        %{name}-%{alphatag}.tar.xz
-Source1:        %{name}-phobos-%{phobostag}.tar.xz
-Source2:        %{name}-druntime-%{druntimetag}.tar.xz
+Source0:        %{name}-%{alphatag}.xz
+Source1:        %{name}-phobos-%{phobostag}.xz
+Source2:        %{name}-druntime-%{druntimetag}.xz
 Source3:        macros.%{name}
-# fix current build system report to upstream done
-Patch0:         %{name}_fix_build.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#BuildRequires:  llvm-devel >= 2.9
+BuildRequires:  llvm-devel >= 2.9
 BuildRequires:  libconfig, libconfig-devel
 BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
@@ -157,7 +155,6 @@ Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 %setup -q -n %{name}-%{alphatag}
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
 %setup -q -T -D -a 2 -n %{name}-%{alphatag}
-%patch0 -p1 -b .fix
 find . -type f -exec sed -i 's/\r//g' {} \;
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
@@ -167,6 +164,7 @@ mkdir geany_config
         -DCONF_INST_DIR:PATH=%{_sysconfdir}         \
         -DRUNTIME_DIR=./druntime                    \
         -DPHOBOS2_DIR=./phobos                      \
+        -DBUILD_SHARED_LIBS:BOOL=ON                 \
         -DD_FLAGS:STRING="-O2;-g;-w;-d;-release"    \
         -DLLVM_CONFIG_HEADER=config-%{__isa_bits}.h \
         -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d \
@@ -181,28 +179,21 @@ rm -rf %{buildroot}
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 mkdir -p %{buildroot}/%{_includedir}/d/ldc
+mkdir -p %{buildroot}/%{_datadir}/geany/tags/
+# macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
-
-sed -i \
-    -e      "10a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\","        \
-    -e      "11a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/phobos\","\
-    -e      "12a \ \ \ \ \ \ \ \"-I%{_includedir}\/d\/ldc\","   \
-    -e      "/^.*-I.*%{name}-%{alphatag}.*$/d"                  \
-    -e      "s|-L-L.*lib|-L-L%{_libdir}/druntime.so|"       %{buildroot}/%{_sysconfdir}/ldc2.conf
-
-sed -i "s|DFLAGS.*|DFLAGS=-I%{_includedir}/d -L-L%{_libdir} -d-version=Phobos -defaultlib=phobos2 -debuglib=phobos2|" bin/ldc2.rebuild.conf
-
-ln %{buildroot}%{_bindir}/ldc2	%{buildroot}%{_bindir}/ldc
+# geany tags
+install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %clean
 rm -rf %{buildroot}
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%post druntime -p /sbin/ldconfig
-%postun druntime -p /sbin/ldconfig
-%post phobos -p /sbin/ldconfig
-%postun phobos -p /sbin/ldconfig
+%post               -p  /sbin/ldconfig
+%postun             -p  /sbin/ldconfig
+%post   druntime    -p  /sbin/ldconfig
+%postun druntime    -p  /sbin/ldconfig
+%post   phobos      -p  /sbin/ldconfig
+%postun phobos      -p  /sbin/ldconfig
 
 %files
 %defattr(-,root,root,-)
@@ -210,7 +201,7 @@ rm -rf %{buildroot}
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
-%{_bindir}/ldc
+%{_sysconfdir}/bash_completion.d/ldc
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
 %{_includedir}/d/core
@@ -238,6 +229,9 @@ rm -rf %{buildroot}
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
+* Thu Nov 9 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-5.20110911git3cf958ad
+- Update to latest revision
+
 * Sat Sep 17 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-4.20110915git423076d
 - Update to latest revision
 
