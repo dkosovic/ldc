@@ -1,8 +1,8 @@
 # debug info seem not works with D compiler
-%global     snapdate        201210307
-%global     ldc_rev         43667e1
-%global     phobos_rev      2cc90b1
-%global     druntime_rev    3645d7e
+%global     snapdate        20120525
+%global     ldc_rev         1f5bced
+%global     phobos_rev      2bc3677
+%global     druntime_rev    90a1a8a
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        14.%{alphatag}%{?dist}
+Release:        15.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -179,7 +179,7 @@ mkdir geany_config
 
 %build
 %cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=ON  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
-make %{?_smp_mflags} VERBOSE=2 phobos2
+make VERBOSE=2 phobos2
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
@@ -241,6 +241,9 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %{_datadir}/devhelp/books/Phobos
 
 %changelog
+* Fri May 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-15.20120525git1805e53
+- update to latest rev dmdfe 2.059
+
 * Mon Mar 12 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-14.201210307git43667e1
 - update to latest rev
 
