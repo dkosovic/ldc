@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
 %global     snapdate        20120602
-%global     ldc_rev         509a579
+%global     ldc_rev         d24592b
 %global     phobos_rev      2bc3677
 %global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
@@ -176,7 +176,6 @@ devhelp pour le parcourir.
 find . -type f -exec sed -i 's/\r//g' {} \;
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
-cat /usr/include/d/core/exception.di
 
 %build
 %cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=ON  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
@@ -242,8 +241,11 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %{_datadir}/devhelp/books/Phobos
 
 %changelog
+* Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-17.20120602gitd24592b
+- fix bug to able tango build bis
+
 * Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-16.20120602git509a579
-- fix bug to able tangos build
+- fix bug to able tango build
 
 * Fri May 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-15.20120525git1805e53
 - update to latest rev dmdfe 2.059
