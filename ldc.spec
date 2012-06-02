@@ -1,8 +1,8 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120525
-%global     ldc_rev         1f5bced
+%global     snapdate        20120602
+%global     ldc_rev         509a579
 %global     phobos_rev      2bc3677
-%global     druntime_rev    90a1a8a
+%global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        15.%{alphatag}%{?dist}
+Release:        16.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -241,6 +241,9 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %{_datadir}/devhelp/books/Phobos
 
 %changelog
+* Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-16.20120602git509a579
+- fix bug to able tangos build
+
 * Fri May 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-15.20120525git1805e53
 - update to latest rev dmdfe 2.059
 
