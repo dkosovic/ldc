@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        16.%{alphatag}%{?dist}
+Release:        17.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
