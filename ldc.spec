@@ -192,7 +192,7 @@ mkdir -p %{buildroot}/%{_includedir}/d/ldc
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
-find -name "*.di" %{buildroot}/%{_includedir}/d/core | xargs sed -i 's|/home/builder/rpmbuild/BUILD/ldc-20120602git509a579/runtime/druntime/src/||'
+find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i 's|/home/builder/rpmbuild/BUILD/ldc-20120602git509a579/runtime/druntime/src/||'
 
 # macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
