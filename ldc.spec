@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        17.%{alphatag}%{?dist}
+Release:        18.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -187,10 +187,12 @@ geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
 find import  -name "*.di" | xargs sed -i "s|%{_buildir}/%{name}-%{alphatag}/runtime/druntime/src|/usr/include/d|g"
 
 %install
-make %{?_smp_mflags} install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 mkdir -p %{buildroot}/%{_includedir}/d/ldc
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
+
+make %{?_smp_mflags} install DESTDIR=%{buildroot}
+find -name "*.di" %{buildroot}/%{_includedir}/d/core | xargs sed -i 's|/home/builder/rpmbuild/BUILD/ldc-20120602git509a579/runtime/druntime/src/||'
 
 # macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
@@ -241,6 +243,9 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %{_datadir}/devhelp/books/Phobos
 
 %changelog
+* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602gitd24592b
+- remove buildroot path into .di file
+
 * Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-17.20120602gitd24592b
 - fix bug to able tango build bis
 
