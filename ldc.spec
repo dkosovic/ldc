@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120602
-%global     ldc_rev         d24592b
+%global     snapdate        20120605
+%global     ldc_rev         6ad085a
 %global     phobos_rev      2bc3677
 %global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        18.%{alphatag}%{?dist}
+Release:        20.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -217,8 +217,8 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 
 %files druntime
 %doc runtime/druntime/LICENSE_1_0.txt runtime/druntime/README.txt
-%{_libdir}/libdruntime-ldc.so.2.0.58
-%{_libdir}/libdruntime-ldc.so.58
+%{_libdir}/libdruntime-ldc.so.2.0.59
+%{_libdir}/libdruntime-ldc.so.59
 
 %files druntime-devel
 %{_includedir}/d/ldc
@@ -227,8 +227,8 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 
 %files phobos
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc.so.2.0.58
-%{_libdir}/libphobos-ldc.so.58
+%{_libdir}/libphobos-ldc.so.2.0.59
+%{_libdir}/libphobos-ldc.so.59
 
 %files phobos-devel
 %{_includedir}/d/crc32.d
@@ -243,6 +243,9 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %{_datadir}/devhelp/books/Phobos
 
 %changelog
+* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120602git6ad085a
+- bump soname to 59
+
 * Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602gitd24592b
 - remove buildroot path into .di file
 
