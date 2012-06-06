@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
 %global     snapdate        20120606
-%global     ldc_rev         260faae
+%global     ldc_rev         1c301aa
 %global     phobos_rev      2bc3677
 %global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
@@ -175,13 +175,12 @@ mkdir -p %{buildroot}/%{_includedir}/d/ldc
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
-find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i 's|/home/builder/rpmbuild/BUILD/ldc-20120602git509a579/runtime/druntime/src/||'
+find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
 
 # macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 # geany tags
 install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
-
 
 %post   druntime    -p  /sbin/ldconfig
 %postun druntime    -p  /sbin/ldconfig
