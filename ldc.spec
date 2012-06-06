@@ -222,7 +222,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
-* Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120606git260faae
+* Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120606git1c301aa
 - bump soname to 59
 
 * Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602gitd24592b
