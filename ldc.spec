@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        20.%{alphatag}%{?dist}
+Release:        21.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -223,9 +223,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %changelog
 * Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120606git1c301aa
-- bump soname to 59
+- fix imported di file
 
-* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602gitd24592b
+* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602git260faae
 - remove buildroot path into .di file
 
 * Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-17.20120602gitd24592b
