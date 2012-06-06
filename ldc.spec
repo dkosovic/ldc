@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120605
-%global     ldc_rev         6ad085a
+%global     snapdate        20120606
+%global     ldc_rev         260faae
 %global     phobos_rev      2bc3677
 %global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
@@ -35,7 +35,6 @@ Source0:        %{name}-%{alphatag}.xz
 Source1:        %{name}-phobos-%{phobostag}.xz
 Source2:        %{name}-druntime-%{druntimetag}.xz
 Source3:        macros.%{name}
-Source4:        DdocToDevhelp
 
 BuildRequires:  llvm-devel >= 3.0
 BuildRequires:  libconfig, libconfig-devel
@@ -153,22 +152,6 @@ Enable autocompletion for phobos library in geany (IDE)
 %description -l fr phobos-geany-tags
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
-%package phobos-devhelp
-Summary:        Phobos user and reference manuals
-Group:          Development/Tools
-Requires:       %{name} =  %{version}-%{release}
-BuildArch:      noarch
-BuildRequires:  python, python-BeautifulSoup
-Requires:       devhelp
-
-%description phobos-devhelp
-User Manual and Reference, Manual are provided in HTML format. You can use
-devhelp to browse it.
-
-%description -l fr phobos-devhelp
-Manuel et référence, le manuel est fournit au format HTML. Vous pouez utilisez
-devhelp pour le parcourir.
-
 %prep
 %setup -q -n %{name}-%{alphatag}
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
@@ -198,8 +181,7 @@ find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i 's|/home/bui
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 # geany tags
 install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
-python  %{SOURCE4} -n Phobos -s %{buildroot}%{_includedir}/d/std/ -p %{buildroot}/%{_datadir}
-find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i "s|%{buildroot}||g" 
+
 
 %post   druntime    -p  /sbin/ldconfig
 %postun druntime    -p  /sbin/ldconfig
@@ -239,11 +221,9 @@ find %{buildroot}/%{_datadir}/devhelp/books/Phobos -name "*.html" | xargs sed -i
 %files phobos-geany-tags
 %{_datadir}/geany/tags/phobos.d.tags
 
-%files phobos-devhelp
-%{_datadir}/devhelp/books/Phobos
 
 %changelog
-* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120602git6ad085a
+* Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-20.20120606git260faae
 - bump soname to 59
 
 * Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602gitd24592b
