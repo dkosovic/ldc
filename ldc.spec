@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120606
-%global     ldc_rev         1c301aa
+%global     snapdate        20120613
+%global     ldc_rev         3eef7b7
 %global     phobos_rev      2bc3677
 %global     druntime_rev    430c913
 %global     alphatag        %{snapdate}git%{ldc_rev}
@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        21.%{alphatag}%{?dist}
+Release:        22.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -222,6 +222,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Fri Jun 15 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-22.20120613git3eef7b7
+- update ldc
+
 * Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-21.20120606git1c301aa
 - fix imported di file
 
