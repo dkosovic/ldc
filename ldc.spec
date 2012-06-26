@@ -1,8 +1,8 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120613
-%global     ldc_rev         3eef7b7
+%global     snapdate        20120624
+%global     ldc_rev         cef19fb
 %global     phobos_rev      2bc3677
-%global     druntime_rev    430c913
+%global     druntime_rev    270d728
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -23,7 +23,7 @@
 
 Name:           ldc
 Version:        2
-Release:        22.%{alphatag}%{?dist}
+Release:        24.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -177,6 +177,9 @@ mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
 find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
 
+sed -i "s/D_Ddoc/CoreDDoc/g"  %{buildroot}/%{_includedir}/d/core/atomic.di # fix a bug will be fixed with dmdfe 2.060
+
+
 # macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 # geany tags
@@ -222,6 +225,12 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Tue Jun 26 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-24.20120624gitcef19fb
+- Fix doc generation bug
+
+* Mon Jun 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-23.20120624gitcef19fb
+- update ldc
+
 * Fri Jun 15 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-22.20120613git3eef7b7
 - update ldc
 
