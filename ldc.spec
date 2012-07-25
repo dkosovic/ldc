@@ -12,20 +12,18 @@
 # cd ldc; git rev-parse --short HEAD            -> for ldc_rev
 # cd ldc/phobos; git rev-parse --short HEAD     -> for phobos_rev
 # cd ldc/druntime/;  git rev-parse --short HEAD -> for druntime_rev
-# git clone https://github.com/ldc-developers/ldc.git
-# (cd ldc; git checkout 3cf958a; git submodule init; git submodule update;          \
-#  git archive --prefix=ldc-%%{alphatag}/ HEAD | xz > ../ldc-%%{alphatag}.xz        \
-# ) 
-# (cd ldc/druntime;                                                                 \
-#  git archive --prefix=druntime/ HEAD | xz > ../../ldc-druntime-%%{druntimetag}.xz \
-# )
-# (cd ldc/phobos;                                                                   \
-#  git archive --prefix=phobos/ HEAD | xz > ../../ldc-phobos-%%{phobostag}.xz       \
-# )
+# git clone https://github.com/ldc-developers/ldc.git ldc_checkout
+# cd ldc_checkout; git checkout %%ldc_rev 
+# git archive --prefix=ldc-%%{alphatag}/ HEAD | xz > ../ldc-%%{alphatag}.xz
+# git submodule update -i;
+# cd runtime/druntime
+# git archive --prefix=runtime/druntime/ HEAD | xz > ../../../ldc-druntime-%%{druntimetag}.xz
+# cd ../phobos
+# git archive --prefix=runtime/phobos/ HEAD | xz > ../../../ldc-phobos-%%{phobostag}.xz
 
 Name:           ldc
 Version:        2
-Release:        5.%{alphatag}%{?dist}
+Release:        24.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -37,7 +35,6 @@ Source0:        %{name}-%{alphatag}.xz
 Source1:        %{name}-phobos-%{phobostag}.xz
 Source2:        %{name}-druntime-%{druntimetag}.xz
 Source3:        macros.%{name}
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  llvm-devel >= 2.9
 BuildRequires:  libconfig, libconfig-devel
@@ -75,7 +72,7 @@ implémenter.
 Summary:        Runtime library for D
 Group:          Development/Tools
 License:        Boost
-Requires:       %{name} =  %{version}-%{release}
+Requires:       %{name}%{?_isa} =  %{version}-%{release}
 
 %description druntime
 Druntime is the minimum library required to support the D programming
@@ -93,7 +90,8 @@ démarage/extinction, etc
 %package        druntime-devel
 Summary:        Support for developing D application
 Group:          Development/Tools
-Requires:       %{name} =  %{version}-%{release}
+Requires:       %{name}%{?_isa}  =  %{version}-%{release}
+Requires:       %{name}-druntime = %{version}-%{release}
 
 
 %description druntime-devel
@@ -108,8 +106,8 @@ des applications en D utilisant druntime.
 Summary:        Standard Runtime Library
 Group:          Development/Tools
 License:        Boost
-Requires:       %{name} =  %{version}-%{release}
-Requires:       %{name}-druntime
+Requires:       %{name}%{?_isa} =  %{version}-%{release}
+Requires:       %{name}-druntime = %{version}-%{release}
 
 %description phobos
 Each module in Phobos conforms as much as possible to the following design
@@ -128,7 +126,9 @@ situations, et les programmeurs doivent implémenter d'une certaines manière.
 %package        phobos-devel
 Summary:        Support for developing D application
 Group:          Development/Tools
-Requires:       %{name} =  %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-phobos  = %{version}-%{release}
+Requires:       %{name}-druntime-devel
 
 %description phobos-devel
 The phobos-devel package contains header files for developing D
@@ -142,6 +142,7 @@ des applications en D utilisant phobos.
 Summary:        Support for enable autocompletion in geany
 Group:          Development/Tools
 Requires:       %{name} =  %{version}-%{release}
+BuildArch:      noarch
 BuildRequires:  geany
 Requires:       geany
 
@@ -171,64 +172,128 @@ mkdir geany_config
         .
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
+find -iname ldc2.conf
+
+sed -i "s|/builddir/build/BUILD/ldc-%{alphatag}|/%{_includedir}/d|g" ldc2.conf
+
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
 
 %install
-rm -rf %{buildroot}
-make %{?_smp_mflags} install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 mkdir -p %{buildroot}/%{_includedir}/d/ldc
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
+
+make %{?_smp_mflags} install DESTDIR=%{buildroot}
+find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
+
+sed -i "s/D_Ddoc/CoreDDoc/g"  %{buildroot}/%{_includedir}/d/core/atomic.di # fix a bug will be fixed with dmdfe 2.060
+
 # macros for D package
 install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 # geany tags
-install -m0755 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
+install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
-%clean
-rm -rf %{buildroot}
+ls %{buildroot}/%{_includedir}/d
+ls %{buildroot}/%{_includedir}/druntime
+ls %{buildroot}/%{_includedir}/druntime/src
 
-%post               -p  /sbin/ldconfig
-%postun             -p  /sbin/ldconfig
 %post   druntime    -p  /sbin/ldconfig
 %postun druntime    -p  /sbin/ldconfig
 %post   phobos      -p  /sbin/ldconfig
 %postun phobos      -p  /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %doc LICENSE readme.txt
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
-%{_sysconfdir}/bash_completion.d/ldc
+%config             %{_sysconfdir}/bash_completion.d/ldc
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
 %{_includedir}/d/core
 
 %files druntime
-%defattr(-,root,root,-)
 %doc druntime/LICENSE_1_0.txt druntime/README.txt
 %{_libdir}/libdruntime-ldc.so
 
 %files druntime-devel
-%defattr(-,root,root,-)
 %{_includedir}/d/ldc
 
 %files phobos
-%defattr(-,root,root,-)
 %doc phobos/LICENSE_1_0.txt
 %{_libdir}/liblphobos2.so
 
 %files phobos-devel
-%defattr(-,root,root,-)
 %{_includedir}/d/phobos
 
 %files phobos-geany-tags
-%defattr(-,root,root,-)
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
+* Tue Jun 26 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-24.20120624gitcef19fb
+- Fix doc generation bug
+
+* Mon Jun 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-23.20120624gitcef19fb
+- update ldc
+
+* Fri Jun 15 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-22.20120613git3eef7b7
+- update ldc
+
+* Wed Jun 06 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-21.20120606git1c301aa
+- fix imported di file
+
+* Sun Jun 03 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-18.20120602git260faae
+- remove buildroot path into .di file
+
+* Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-17.20120602gitd24592b
+- fix bug to able tango build bis
+
+* Fri Jun 02 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-16.20120602git509a579
+- fix bug to able tango build
+
+* Fri May 25 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-15.20120525git1805e53
+- update to latest rev dmdfe 2.059
+
+* Mon Mar 12 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-14.201210307git43667e1
+- update to latest rev
+
+* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2-13.201210215git5af48ed
+- Rebuilt for c++ ABI breakage
+
+* Wed Feb 18 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-12.201210218git53f9964
+- Update to latest revision
+- update dmdfe to 2.058
+- ldc has new parameter -soname
+- fix library creation when multiple object files
+- fix phobos and druntime soname
+
+* Mon Feb 13 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-11.201210207git72d510c
+- update to latest revision
+- update dmdfe to 2.057
+- fix tango build for 32 bit
+
+* Fri Jan 5 2012 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-10.20111206gitfa5fb92
+- fix doc for devhelp
+
+* Fri Dec 9 2011  Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-9.20111206gitfa5fb92
+- Add doc for devhelp
+
+* Wed Dec 6 2011  Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-8.20111206gitfa5fb92
+- Put %%{_d_includedir}/core into druntime-devel package
+
+* Wed Dec 6 2011  Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-8.20111206git641cc85
+- Update compiler to latest revision
+- Update runtime to latest revision
+- Update phobos to latest revision
+
+* Thu Dec 1 2011  Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-7.20111117git4add11b
+- Update to latest revision
+- fix dependencies
+
+* Sat Nov 9 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-6.20111112gitd9da872
+- Update to latest revision
+
 * Thu Nov 9 2011 Jonathan MERCIER <bioinfornatics@fedoraproject.org> - 2-5.20110911git3cf958ad
 - Update to latest revision
 
