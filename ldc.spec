@@ -160,6 +160,8 @@ find . -type f -exec sed -i 's/\r//g' {} \;
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
+sed -i "10a/#include <string.h>" dmd2/hdrgen.h
+
 %build
 %cmake  -DD_VERSION:STRING=2                        \
         -DCONF_INST_DIR:PATH=%{_sysconfdir}         \
@@ -172,9 +174,8 @@ mkdir geany_config
         .
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
-find -iname ldc2.conf
-
 sed -i "s|/builddir/build/BUILD/ldc-%{alphatag}|/%{_includedir}/d|g" ldc2.conf
+cat ldc2.conf
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
@@ -182,9 +183,11 @@ geany -c geany_config -g phobos.d.tags $(find phobos/std -name "*.d")
 %install
 mkdir -p %{buildroot}/%{_sysconfdir}/rpm
 mkdir -p %{buildroot}/%{_includedir}/d/ldc
+mkdir -p %{buildroot}/%{_includedir}/d/druntime
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
+cp -r druntime/src/* %{buildroot}/%{_includedir}/d/druntime
 find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
 
 sed -i "s/D_Ddoc/CoreDDoc/g"  %{buildroot}/%{_includedir}/d/core/atomic.di # fix a bug will be fixed with dmdfe 2.060
