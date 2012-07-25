@@ -160,7 +160,9 @@ find . -type f -exec sed -i 's/\r//g' {} \;
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
+
 sed -i "10a/#include <string.h>" dmd2/hdrgen.h
+cat dmd2/hdrgen.h
 
 %build
 %cmake  -DD_VERSION:STRING=2                        \
@@ -174,7 +176,9 @@ sed -i "10a/#include <string.h>" dmd2/hdrgen.h
         .
 make %{?_smp_mflags} VERBOSE=2 phobos2
 
-sed -i "s|/builddir/build/BUILD/ldc-%{alphatag}|/%{_includedir}/d|g" ldc2.conf
+sed -i \
+    -e "s|/builddir/build/BUILD/ldc-%{alphatag}|/%{_includedir}/d|g"  \
+    -e "s|druntime/src|druntime"  ldc2.conf
 cat ldc2.conf
 
 # generate geany tags
