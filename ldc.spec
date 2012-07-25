@@ -161,7 +161,7 @@ find . -type f -exec sed -i 's/\r//g' {} \;
 mkdir geany_config
 
 
-sed -i "10a/#include <string.h>" dmd2/hdrgen.h
+sed -i "10a #include <string.h>" dmd2/hdrgen.h
 cat dmd2/hdrgen.h
 
 %build
