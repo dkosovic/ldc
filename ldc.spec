@@ -161,8 +161,51 @@ find . -type f -exec sed -i 's/\r//g' {} \;
 mkdir geany_config
 
 
-sed -i "10a #include <string.h>" dmd2/hdrgen.h
-cat dmd2/hdrgen.h
+sed -i "11i\#include <string.h>" dmd2/hdrgen.h
+sed -i  \
+    -e "27d" \
+    -e "34i\    void startaddress(SegHandle seg, SegOffset offset);         // set start address" dmd2/objfile.h
+sed -i "26i\#include \"root/stringtable.h\"" dmd2/lib.h
+sed -i "13i\#include <cstring>" dmd2/utf.h
+sed -i "12i\#include \"mars.h\"" dmd2/html.h
+sed -i \
+    -e "17i\#include <cstring>" \
+    -e "17i\#include \"root.h\"" dmd2/root/async.h
+sed -i "22i\#include <cstring>" dmd2/root/dchar.h
+sed -i "17i\#include \"html.h\"" dmd2/doc.h
+sed -i "1i\#include <cstring>" dmd2/root/aav.h
+sed -i "13i\#include \"mtype.h\"" dmd2/cond.h
+sed -i \
+    -e "7i\#include \"gen/logger.h\"" \
+    -e "7i\#include \"gen/irstate.h\"" \
+    -e "7i\#include \"gen/abi.h\"" gen/abi-generic.h
+sed -i \
+    -e "3i\#include \"gen/dvalue.h\"" \
+    -e "3i\#include \"gen/llvm.h\"" \
+    -e "3i\#include \"dmd2/lexer.h\"" \
+    -e "3i\#include \"ir/irfunction.h\"" \
+    -e "3i\#include \"gen/logger.h\"" gen/aa.h
+sed -i "3i\#include \"llvm/Function.h\"" gen/runtime.h
+sed -i \
+    -e "3i\#include \"gen/llvm.h\"" \
+    -e "3i\#include \"ir/irfunction.h\"" \
+    -e "3i\#include \"dmd2/lexer.h\"" \
+    -e "3i\#include \"dmd2/statement.h\"" \
+    -e "3i\#include \"gen/irstate.h\"" gen/abi.h
+sed -i \
+    -e "3i\#include <sstream>" \
+    -e "3i\#include \"dmd2/mars.h\"" \
+    -e "3i\#include \"dmd2/statement.h\"" \
+    -e "3i\#include \"dmd2/lexer.h\""  gen/asm-x86-32.h
+sed -i \
+    -e "3i\#include <sstream>" \
+    -e "3i\#include \"dmd2/mars.h\"" \
+    -e "3i\#include \"dmd2/statement.h\"" \
+    -e "3i\#include \"dmd2/lexer.h\""  gen/asm-x86-64.h
+sed -i "3i\#include <cstring>" gen/warnings.h
+sed -i \
+    -e "3i\#include <DerivedTypes.h>" \
+    -e "3i\#include \"llvm.h\"" gen/functions.h
 
 %build
 %cmake  -DD_VERSION:STRING=2                        \
