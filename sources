@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-dd3fc86c07bac6ba245fa24483973454  ldc-20120624gitcef19fb.xz
-72271de8f33ae757d580080654a7bd9a  ldc-phobos-20120624git2bc3677.xz
-e3338c46843c4dc1edaef70424e7192a  ldc-druntime-20120624git270d728.xz
-2207fd2545a5fc62c93e3ba72c89c4ca  macros.ldc
-=======
 75284a5380bc13698b06e0dc9152b0d4  ldc-20120921git8968103.tar.xz
 8efe526741b0427ef07a1c78c2a0119e  ldc-druntime-20120921gitea1c20f.tar.xz
 70ac0ec49e7e0dcdfb2bc64c08a6bd4f  ldc-phobos-20120921git3b5393f.tar.xz
->>>>>>> 6d79c7d... Update to latest ldc rev
+2207fd2545a5fc62c93e3ba72c89c4ca  macros.ldc
