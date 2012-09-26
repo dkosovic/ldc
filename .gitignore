@@ -27,6 +27,7 @@ ldc-20100804hg1655.tar.xz
 /ldc-druntime-201210307git3645d7e.xz
 /ldc-phobos-201210307git2cc90b1.xz
 /ldc-201210307git43667e1.xz
+<<<<<<< HEAD
 /ldc-20120525git1f5bced.xz
 /ldc-druntime-20120525git90a1a8a.xz
 /ldc-phobos-20120525git2bc3677.xz
@@ -48,3 +49,17 @@ ldc-20100804hg1655.tar.xz
 /ldc-20120624gitcef19fb.xz
 /ldc-phobos-20120624git2bc3677.xz
 /ldc-druntime-20120624git270d728.xz
+=======
+/ldc-20120720git5f15b30.xz
+/ldc-druntime-20120720git97ce46c.xz
+/ldc-phobos-20120720git52b15ed.xz
+/ldc-20120725git09b095e.xz
+/ldc-phobos-20120725git52b15ed.xz
+/ldc-druntime-20120725git97ce46c.xz
+/ldc-20120811git34d595d.tar.xz
+/ldc-phobos-20120811git52b15ed.tar.xz
+/ldc-druntime-20120811git675c3e1.tar.xz
+/ldc-20120921git8968103.tar.xz
+/ldc-druntime-20120921gitea1c20f.tar.xz
+/ldc-phobos-20120921git3b5393f.tar.xz
+>>>>>>> 6d79c7d... Update to latest ldc rev

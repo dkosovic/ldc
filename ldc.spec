@@ -1,29 +1,27 @@
 # debug info seem not works with D compiler
-%global     snapdate        20120624
-%global     ldc_rev         cef19fb
-%global     phobos_rev      2bc3677
-%global     druntime_rev    270d728
+%global     snapdate        20120921
+%global     ldc_rev         8968103
+%global     phobos_rev      3b5393f
+%global     druntime_rev    ea1c20f
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
 
 # The source for this package was pulled from upstream's git.
 # Use the following commands to generate the tarball:
-# cd ldc; git rev-parse --short HEAD            -> for ldc_rev
-# cd ldc/phobos; git rev-parse --short HEAD     -> for phobos_rev
-# cd ldc/druntime/;  git rev-parse --short HEAD -> for druntime_rev
-# git clone https://github.com/ldc-developers/ldc.git ldc_checkout
-# cd ldc_checkout; git checkout %%ldc_rev 
-# git archive --prefix=ldc-%%{alphatag}/ HEAD | xz > ../ldc-%%{alphatag}.xz
-# git submodule update -i;
-# cd runtime/druntime
-# git archive --prefix=runtime/druntime/ HEAD | xz > ../../../ldc-druntime-%%{druntimetag}.xz
-# cd ../phobos
-# git archive --prefix=runtime/phobos/ HEAD | xz > ../../../ldc-phobos-%%{phobostag}.xz
+# git clone https://github.com/ldc-developers/ldc.git ldc
+# cd ldc; git submodule update -i
+# git rev-parse --short HEAD            -> for ldc_rev
+# git checkout %%ldc_rev 
+# git archive --prefix=ldc-%%{alphatag}/ HEAD --format=tar | xz > ../ldc-%%{alphatag}.tar.xz
+# cd runtime/druntime;  git rev-parse --short HEAD -> for druntime_rev
+# git archive --prefix=runtime/druntime/ HEAD --format=tar | xz > ../../../ldc-druntime-%%{druntimetag}.tar.xz
+# cd ../phobos; git rev-parse --short HEAD     -> for phobos_rev
+# git archive --prefix=runtime/phobos/ HEAD --format=tar | xz > ../../../ldc-phobos-%%{phobostag}.tar.xz
 
 Name:           ldc
 Version:        2
-Release:        24.%{alphatag}%{?dist}
+Release:        29.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -31,9 +29,9 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD    
 URL:            http://www.dsource.org/projects/ldc
-Source0:        %{name}-%{alphatag}.xz
-Source1:        %{name}-phobos-%{phobostag}.xz
-Source2:        %{name}-druntime-%{druntimetag}.xz
+Source0:        %{name}-%{alphatag}.tar.xz
+Source1:        %{name}-phobos-%{phobostag}.tar.xz
+Source2:        %{name}-druntime-%{druntimetag}.tar.xz
 Source3:        macros.%{name}
 
 BuildRequires:  llvm-devel >= 3.0
@@ -41,6 +39,7 @@ BuildRequires:  libconfig, libconfig-devel
 BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-devel
+BuildRequires:  libcurl-devel
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -162,7 +161,7 @@ mkdir geany_config
 
 %build
 %cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=ON  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
-make VERBOSE=2 phobos2
+make %{?_smp_mflags} VERBOSE=2 phobos2
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
@@ -191,7 +190,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %postun phobos      -p  /sbin/ldconfig
 
 %files
-%doc LICENSE readme.txt
+%doc LICENSE README
 %config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_sysconfdir}/rpm/macros.ldc
@@ -200,9 +199,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_bindir}/ldmd2
 
 %files druntime
-%doc runtime/druntime/LICENSE_1_0.txt runtime/druntime/README.txt
-%{_libdir}/libdruntime-ldc.so.2.0.59
-%{_libdir}/libdruntime-ldc.so.59
+%doc runtime/druntime/LICENSE runtime/druntime/README
+%{_libdir}/libdruntime-ldc.so.2.0.60
+%{_libdir}/libdruntime-ldc.so.60
 
 %files druntime-devel
 %{_includedir}/d/ldc
@@ -211,10 +210,11 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %files phobos
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc.so.2.0.59
-%{_libdir}/libphobos-ldc.so.59
+%{_libdir}/libphobos-ldc.so.2.0.60
+%{_libdir}/libphobos-ldc.so.60
 
 %files phobos-devel
+%{_includedir}/d
 %{_includedir}/d/crc32.d
 %{_includedir}/d/std
 %{_includedir}/d/etc
@@ -225,6 +225,24 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Wed Sep 26 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-29.20120921git8968103
+- ldc own D include dir
+- Update to dmdfe 2.060
+
+* Sat Aug 11 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-28.20120811git34d595d
+- Update ldc
+
+* Thu Jul 26 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-27.20120720git5f15b30
+- fix link against libcurl
+
+
+* Sun Jul 22 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-26.20120624gitcef19fb
+- Update to use llvm 3.1
+
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2-15.201210307git43667e1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Tue Jun 26 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-24.20120624gitcef19fb
 - Fix doc generation bug
 
