@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        32.%{alphatag}%{?dist}
+Release:        33.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -40,6 +40,7 @@ BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-devel
 BuildRequires:  libcurl-devel
+Requires:       gcc
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -225,6 +226,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Wed Oct 10 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-33.20121007git0777102
+- add gcc at requires
+
 * Wed Oct 10 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-32.20121007git0777102
 - update ldc to rev 0777102
 
