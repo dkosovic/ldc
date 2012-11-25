@@ -1,11 +1,13 @@
 # debug info seem not works with D compiler
-%global     snapdate        20121007
-%global     ldc_rev         0777102
-%global     phobos_rev      db08c0c
-%global     druntime_rev    c38aad3
-%global     alphatag        %{snapdate}git%{ldc_rev}
-%global     phobostag       %{snapdate}git%{phobos_rev}
-%global     druntimetag     %{snapdate}git%{druntime_rev}
+%global     snapdate            20121125
+%global     ldc_rev             a2d433c
+%global     phobos_rev          c3574a7
+%global     druntime_rev        3581ef5
+%global     dmdtestsuite_rev    a4cc334
+%global     alphatag            %{snapdate}git%{ldc_rev}
+%global     phobostag           %{snapdate}git%{phobos_rev}
+%global     druntimetag         %{snapdate}git%{druntime_rev}
+%global     dmdtestsuitetag     %{snapdate}git%{dmdtestsuite_rev}
 
 # The source for this package was pulled from upstream's git.
 # Use the following commands to generate the tarball:
@@ -18,11 +20,14 @@
 # git archive --prefix=runtime/druntime/ HEAD --format=tar | xz > ../../../ldc-druntime-%%{druntimetag}.tar.xz
 # cd ../phobos; git rev-parse --short HEAD     -> for phobos_rev
 # git archive --prefix=runtime/phobos/ HEAD --format=tar | xz > ../../../ldc-phobos-%%{phobostag}.tar.xz
+# cd ../../tests/d2/dmd-testsuite/; git rev-parse --short HEAD     -> for dmdtestsuite_rev
+# git archive --prefix=tests/d2/dmd-testsuite/ HEAD --format=tar | xz > ../../../../ldc-dmd-testsuite-%%{dmdtestsuitetag}.tar.xz
 
 Name:           ldc
 Version:        2
-Release:        33.%{alphatag}%{?dist}
+Release:        35.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
+Summary(fr):    Un compiler pour le langage de programmation D
 
 Group:          Development/Languages
 # The DMD frontend in dmd/* GPL version 1 or artistic license
@@ -33,8 +38,9 @@ Source0:        %{name}-%{alphatag}.tar.xz
 Source1:        %{name}-phobos-%{phobostag}.tar.xz
 Source2:        %{name}-druntime-%{druntimetag}.tar.xz
 Source3:        macros.%{name}
+Source4:        %{name}-dmd-testsuite-%{dmdtestsuitetag}.tar.xz
 
-BuildRequires:  llvm-devel >= 3.0
+BuildRequires:  llvm-devel >= 3.1
 BuildRequires:  libconfig, libconfig-devel
 BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
@@ -68,19 +74,20 @@ LDC compile déjà une grande quantité de code D, mais doit encore être consid
 en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
 implémenter.
 
-%package        druntime
+%package        druntime-static
 Summary:        Runtime library for D
+Summary(fr):    Bibliothèque d'exécution pour le langage D
 Group:          Development/Tools
 License:        Boost
 Requires:       %{name}%{?_isa} =  %{version}-%{release}
 
-%description druntime
+%description druntime-static
 Druntime is the minimum library required to support the D programming
 language. It includes the system code required to support the garbage
 collector, associative arrays, exception handling, array vector operations,
 startup/shutdown, etc.
 
-%description druntime -l fr
+%description druntime-static -l fr
 Druntime est la bibliothèque minimal requise pour supporter la programmation en
 D. Est inclut le code système requis pour supporter le ramasse miette, tableau
 associatif, gestion des exceptions, opertation sur des vecteurs,
@@ -88,7 +95,9 @@ démarage/extinction, etc
 
 
 %package        druntime-devel
+Provides:       druntime-static = %{version}-%{release}
 Summary:        Support for developing D application
+Summary(fr):    Fichier d'entête pour developper en langage D
 Group:          Development/Tools
 Requires:       %{name}%{?_isa}  =  %{version}-%{release}
 Requires:       %{name}-druntime = %{version}-%{release}
@@ -102,21 +111,22 @@ applications that use druntime.
 Le paquet druntime-devel contient les fichiers d'entêtes pour développer
 des applications en D utilisant druntime.
 
-%package        phobos
+%package        phobos-static
 Summary:        Standard Runtime Library
+Summary(fr):    Bibliothèque pour developper en langage D
 Group:          Development/Tools
 License:        Boost
 Requires:       %{name}%{?_isa} =  %{version}-%{release}
 Requires:       %{name}-druntime = %{version}-%{release}
 
-%description phobos
+%description phobos-static
 Each module in Phobos conforms as much as possible to the following design
 goals. These are goals rather than requirements because D is not a religion,
 it's a programming language, and it recognizes that sometimes the goals are
 contradictory and counterproductive in certain situations, and programmers have
 jobs that need to get done
 
-%description phobos -l fr
+%description phobos-static -l fr
 Chaque module de Phobos est conforme autant que possible à la conception
 suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
 pas une religion, c'est un langage de programmation, et il reconnaît que,
@@ -124,7 +134,9 @@ parfois, les objectifs sont contradictoire et contre-productive dans certaines
 situations, et les programmeurs doivent implémenter d'une certaines manière.
 
 %package        phobos-devel
+Provides:       phobos-static = %{version}-%{release}
 Summary:        Support for developing D application
+Summary(fr):    Fichier d'entête pour developper en langage D
 Group:          Development/Tools
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       %{name}-phobos  = %{version}-%{release}
@@ -140,6 +152,7 @@ des applications en D utilisant phobos.
 
 %package phobos-geany-tags
 Summary:        Support for enable autocompletion in geany
+Summary(fr):    Active l'autocompletion de l'api phobos dans geany
 Group:          Development/Tools
 Requires:       %{name} =  %{version}-%{release}
 BuildArch:      noarch
@@ -156,13 +169,16 @@ Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 %setup -q -n %{name}-%{alphatag}
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
 %setup -q -T -D -a 2 -n %{name}-%{alphatag}
-find . -type f -exec sed -i 's/\r//g' {} \;
+%setup -q -T -D -a 4 -n %{name}-%{alphatag}
+
+# find . -type f -exec sed -i 's/\r//g' {} \;
+# find . -type f -exec sed -i 's/\x0A00//g' {} \;
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
 %build
-%cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=ON  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
-make %{?_smp_mflags} VERBOSE=2 phobos2
+%cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
+make VERBOSE=2 phobos2
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
@@ -177,18 +193,20 @@ mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 make %{?_smp_mflags} install DESTDIR=%{buildroot}
 find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
 
-sed -i "s/D_Ddoc/CoreDDoc/g"  %{buildroot}/%{_includedir}/d/core/atomic.di # fix a bug will be fixed with dmdfe 2.060
-
-
 # macros for D package
-install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
+install -m0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 # geany tags
 install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
-%post   druntime    -p  /sbin/ldconfig
-%postun druntime    -p  /sbin/ldconfig
-%post   phobos      -p  /sbin/ldconfig
-%postun phobos      -p  /sbin/ldconfig
+%check
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir}:%{_libdir}
+export LD_LIBRARY_PATH
+ctest %{?_smp_mflags} -VV
+
+#%%post   druntime    -p  /sbin/ldconfig
+#%%postun druntime    -p  /sbin/ldconfig
+#%%post   phobos      -p  /sbin/ldconfig
+#%%postun phobos      -p  /sbin/ldconfig
 
 %files
 %doc LICENSE README
@@ -199,33 +217,42 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
 
-%files druntime
+%files druntime-static
 %doc runtime/druntime/LICENSE runtime/druntime/README
-%{_libdir}/libdruntime-ldc.so.2.0.60
-%{_libdir}/libdruntime-ldc.so.60
+%{_libdir}/libdruntime-ldc.a
+#%%{_libdir}/libdruntime-ldc.so.2.0.60
+#%%{_libdir}/libdruntime-ldc.so.60
 
 %files druntime-devel
 %{_includedir}/d/ldc
 %{_includedir}/d/core
-%{_libdir}/libdruntime-ldc.so
+#%%{_libdir}/libdruntime-ldc.so
 
-%files phobos
+%files phobos-static
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc.so.2.0.60
-%{_libdir}/libphobos-ldc.so.60
+%{_libdir}/libphobos-ldc.a
+#%%{_libdir}/libphobos-ldc.so.2.0.60
+#%%{_libdir}/libphobos-ldc.so.60
 
 %files phobos-devel
 %{_includedir}/d
 %{_includedir}/d/crc32.d
 %{_includedir}/d/std
 %{_includedir}/d/etc
-%{_libdir}/libphobos-ldc.so
+#%%{_libdir}/libphobos-ldc.so
 
 %files phobos-geany-tags
 %{_datadir}/geany/tags/phobos.d.tags
 
 
 %changelog
+* Wed Nov 21 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-35.20121121git2fec23b
+- update to latest revision
+- use static libraries until shared lib will be safe to use
+
+* Mon Nov 05 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-34.20121104gitf95371a
+- update to latest rev f95371a
+
 * Wed Oct 10 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-33.20121007git0777102
 - add gcc at requires
 
