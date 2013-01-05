@@ -1,9 +1,9 @@
 # debug info seem not works with D compiler
-%global     snapdate            20121125
-%global     ldc_rev             a2d433c
+%global     snapdate            20130104
+%global     ldc_rev             82a3216
 %global     phobos_rev          c3574a7
-%global     druntime_rev        3581ef5
-%global     dmdtestsuite_rev    a4cc334
+%global     druntime_rev        5c6053c
+%global     dmdtestsuite_rev    b6f7ffb
 %global     alphatag            %{snapdate}git%{ldc_rev}
 %global     phobostag           %{snapdate}git%{phobos_rev}
 %global     druntimetag         %{snapdate}git%{druntime_rev}
@@ -25,7 +25,7 @@
 
 Name:           ldc
 Version:        2
-Release:        35.%{alphatag}%{?dist}
+Release:        36.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 Summary(fr):    Un compiler pour le langage de programmation D
 
@@ -74,20 +74,20 @@ LDC compile déjà une grande quantité de code D, mais doit encore être consid
 en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
 implémenter.
 
-%package        druntime-static
+%package        druntime
 Summary:        Runtime library for D
 Summary(fr):    Bibliothèque d'exécution pour le langage D
 Group:          Development/Tools
 License:        Boost
 Requires:       %{name}%{?_isa} =  %{version}-%{release}
 
-%description druntime-static
+%description druntime
 Druntime is the minimum library required to support the D programming
 language. It includes the system code required to support the garbage
 collector, associative arrays, exception handling, array vector operations,
 startup/shutdown, etc.
 
-%description druntime-static -l fr
+%description druntime -l fr
 Druntime est la bibliothèque minimal requise pour supporter la programmation en
 D. Est inclut le code système requis pour supporter le ramasse miette, tableau
 associatif, gestion des exceptions, opertation sur des vecteurs,
@@ -95,7 +95,6 @@ démarage/extinction, etc
 
 
 %package        druntime-devel
-Provides:       druntime-static = %{version}-%{release}
 Summary:        Support for developing D application
 Summary(fr):    Fichier d'entête pour developper en langage D
 Group:          Development/Tools
@@ -111,7 +110,7 @@ applications that use druntime.
 Le paquet druntime-devel contient les fichiers d'entêtes pour développer
 des applications en D utilisant druntime.
 
-%package        phobos-static
+%package        phobos
 Summary:        Standard Runtime Library
 Summary(fr):    Bibliothèque pour developper en langage D
 Group:          Development/Tools
@@ -119,14 +118,14 @@ License:        Boost
 Requires:       %{name}%{?_isa} =  %{version}-%{release}
 Requires:       %{name}-druntime = %{version}-%{release}
 
-%description phobos-static
+%description phobos
 Each module in Phobos conforms as much as possible to the following design
 goals. These are goals rather than requirements because D is not a religion,
 it's a programming language, and it recognizes that sometimes the goals are
 contradictory and counterproductive in certain situations, and programmers have
 jobs that need to get done
 
-%description phobos-static -l fr
+%description phobos -l fr
 Chaque module de Phobos est conforme autant que possible à la conception
 suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
 pas une religion, c'est un langage de programmation, et il reconnaît que,
@@ -134,7 +133,6 @@ parfois, les objectifs sont contradictoire et contre-productive dans certaines
 situations, et les programmeurs doivent implémenter d'une certaines manière.
 
 %package        phobos-devel
-Provides:       phobos-static = %{version}-%{release}
 Summary:        Support for developing D application
 Summary(fr):    Fichier d'entête pour developper en langage D
 Group:          Development/Tools
@@ -177,7 +175,7 @@ Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 mkdir geany_config
 
 %build
-%cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
+%cmake  -DMULTILIB:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=ON  -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d .
 make VERBOSE=2 phobos2
 
 # generate geany tags
@@ -199,14 +197,14 @@ install -m0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
 install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %check
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir}:%{_libdir}
-export LD_LIBRARY_PATH
-ctest %{?_smp_mflags} -VV
+# LD_LIBRARY_PATH=%%{buildroot}/%%{_libdir}:%%{_libdir}
+# export LD_LIBRARY_PATH
+# ctest %%{?_smp_mflags} -VV
 
-#%%post   druntime    -p  /sbin/ldconfig
-#%%postun druntime    -p  /sbin/ldconfig
-#%%post   phobos      -p  /sbin/ldconfig
-#%%postun phobos      -p  /sbin/ldconfig
+%post   druntime    -p  /sbin/ldconfig
+%postun druntime    -p  /sbin/ldconfig
+%post   phobos      -p  /sbin/ldconfig
+%postun phobos      -p  /sbin/ldconfig
 
 %files
 %doc LICENSE README
@@ -217,38 +215,38 @@ ctest %{?_smp_mflags} -VV
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
 
-%files druntime-static
+%files druntime
 %doc runtime/druntime/LICENSE runtime/druntime/README
-%{_libdir}/libdruntime-ldc.a
-#%%{_libdir}/libdruntime-ldc.so.2.0.60
-#%%{_libdir}/libdruntime-ldc.so.60
+%{_libdir}/libdruntime-ldc.so.2.0.61
+%{_libdir}/libdruntime-ldc.so.61
 
 %files druntime-devel
 %{_includedir}/d/ldc
 %{_includedir}/d/core
-#%%{_libdir}/libdruntime-ldc.so
+%{_libdir}/libdruntime-ldc.so
 
-%files phobos-static
+%files phobos
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc.a
-#%%{_libdir}/libphobos-ldc.so.2.0.60
-#%%{_libdir}/libphobos-ldc.so.60
+%{_libdir}/libphobos-ldc.so.2.0.61
+%{_libdir}/libphobos-ldc.so.61
 
 %files phobos-devel
 %{_includedir}/d
 %{_includedir}/d/crc32.d
 %{_includedir}/d/std
 %{_includedir}/d/etc
-#%%{_libdir}/libphobos-ldc.so
+%{_libdir}/libphobos-ldc.so
 
 %files phobos-geany-tags
 %{_datadir}/geany/tags/phobos.d.tags
 
 
 %changelog
+* Sat Jan 05 2013 Jonathan MERCIER <bioinfornatics at gmail.com>
+- update to latest revision
+
 * Wed Nov 21 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-35.20121121git2fec23b
 - update to latest revision
-- use static libraries until shared lib will be safe to use
 
 * Mon Nov 05 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-34.20121104gitf95371a
 - update to latest rev f95371a
