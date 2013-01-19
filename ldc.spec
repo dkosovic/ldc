@@ -248,7 +248,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
-* Sat Jan 05 2013 Jonathan MERCIER <bioinfornatics at gmail.com>
+* Sat Jan 05 2013 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-36.20120105git82a3216
 - update to latest revision
 
 * Wed Nov 21 2012 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-35.20121121git2fec23b
