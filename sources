@@ -1,5 +1,5 @@
-cebeb8b75e6b7774c09654ec1976920e  ldc-druntime-20130127gite7e6998.tar.xz
-27ed251116e352aa4b645dc2fd038726  ldc-phobos-20130127gite7e6998.tar.xz
-2207fd2545a5fc62c93e3ba72c89c4ca  macros.ldc
-a400b1993b2bd985f05a3ac59b977be6  ldc-dmd-testsuite-20130104gitb6f7ffb.tar.xz
 40b49308c22298f330cc8e22c8f64c6f  ldc-20130127gite7e6998.tar.xz
+cebeb8b75e6b7774c09654ec1976920e  ldc-druntime-20130127git3a46e0d.tar.xz
+27ed251116e352aa4b645dc2fd038726  ldc-phobos-20130127gitc3574a7.tar.xz
+a400b1993b2bd985f05a3ac59b977be6  ldc-dmd-testsuite-20130127gitb6f7ffb.tar.xz
+2207fd2545a5fc62c93e3ba72c89c4ca  macros.ldc
