@@ -1,6 +1,6 @@
 # debug info seem not works with D compiler
 %global     snapdate            20130127
-%global     ldc_rev             7e6998
+%global     ldc_rev             e7e6998
 %global     phobos_rev          c3574a7
 %global     druntime_rev        3a46e0d
 %global     dmdtestsuite_rev    b6f7ffb
