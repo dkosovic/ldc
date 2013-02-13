@@ -1,9 +1,9 @@
 # debug info seem not works with D compiler
-%global     snapdate            20130127
-%global     ldc_rev             e7e6998
-%global     phobos_rev          c3574a7
-%global     druntime_rev        3a46e0d
-%global     dmdtestsuite_rev    b6f7ffb
+%global     snapdate            20130129
+%global     ldc_rev             673a974
+%global     phobos_rev          1a3eba6
+%global     druntime_rev        d0005ef
+%global     dmdtestsuite_rev    1a32b14
 %global     alphatag            %{snapdate}git%{ldc_rev}
 %global     phobostag           %{snapdate}git%{phobos_rev}
 %global     druntimetag         %{snapdate}git%{druntime_rev}
@@ -25,7 +25,7 @@
 
 Name:           ldc
 Version:        2
-Release:        37.%{alphatag}%{?dist}
+Release:        38.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 Summary(fr):    Un compiler pour le langage de programmation D
 
@@ -46,7 +46,10 @@ BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-devel
 BuildRequires:  libcurl-devel
+BuildRequires:  zlib-devel
+Requires:       zlib
 Requires:       gcc
+Requires:       curl
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -217,10 +220,10 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %files druntime
 %doc runtime/druntime/LICENSE runtime/druntime/README
-%{_libdir}/libdruntime-ldc-debug.so.2.0.60
-%{_libdir}/libdruntime-ldc.so.2.0.60
-%{_libdir}/libdruntime-ldc-debug.so.60
-%{_libdir}/libdruntime-ldc.so.60
+%{_libdir}/libdruntime-ldc-debug.so.2.0.61
+%{_libdir}/libdruntime-ldc.so.2.0.61
+%{_libdir}/libdruntime-ldc-debug.so.61
+%{_libdir}/libdruntime-ldc.so.61
 
 %files druntime-devel
 %{_includedir}/d/ldc
@@ -230,10 +233,10 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %files phobos
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc-debug.so.2.0.60
-%{_libdir}/libphobos-ldc.so.2.0.60
-%{_libdir}/libphobos-ldc-debug.so.60
-%{_libdir}/libphobos-ldc.so.60
+%{_libdir}/libphobos-ldc-debug.so.2.0.61
+%{_libdir}/libphobos-ldc.so.2.0.61
+%{_libdir}/libphobos-ldc-debug.so.61
+%{_libdir}/libphobos-ldc.so.61
 
 %files phobos-devel
 %{_includedir}/d
@@ -248,6 +251,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Wed Feb 12  2013 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-38.20130129git673a974
+- update to latest rev
+
 * Mon Jan 28 2013 Jonathan MERCIER <bioinfornatics at gmail.com> - 2-37.20130127git7e6998
 - update to latest rev
 
