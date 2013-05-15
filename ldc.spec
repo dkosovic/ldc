@@ -40,6 +40,7 @@ BuildRequires:  cmake
 BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-devel
 BuildRequires:  libcurl-devel
+BuildRequires:  llvm-static
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
