@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        36.%{alphatag}%{?dist}
+Release:        37.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -229,6 +229,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Thu May 16 2013  <bioinfornatics at fedoraproject dot org> - 2-37.20130513git23df06a
+- Update to rev 23df06a
+
 * Wed May 15 2013  <bioinfornatics at fedoraproject dot org> - 2-36.20130513git23df06a
 - Update to rev 23df06a
 
