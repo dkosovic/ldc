@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        36.%{alphatag}%{?dist}
+Release:        37.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -41,6 +41,7 @@ BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  llvm-static
+BuildRequires:  zlib
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -229,6 +230,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Fri May 17 2013 Jonathan MERCIER <bioinfornatics at fedoraproject dot org> - 2-37.20130513git23df06a
+- add zlib as build require
+
 * Wed May 15 2013  <bioinfornatics at fedoraproject dot org> - 2-36.20130513git23df06a
 - Update to rev 23df06a
 
