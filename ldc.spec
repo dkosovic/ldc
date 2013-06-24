@@ -200,10 +200,10 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %files druntime
 %doc runtime/druntime/LICENSE runtime/druntime/README
-%{_libdir}/libdruntime-ldc.so.2.0.62
-%{_libdir}/libdruntime-ldc.so.62
-%{_libdir}/libdruntime-ldc-debug.so.2.0.62
-%{_libdir}/libdruntime-ldc-debug.so.62
+%{_libdir}/libdruntime-ldc.so.2.0.63
+%{_libdir}/libdruntime-ldc.so.63
+%{_libdir}/libdruntime-ldc-debug.so.2.0.63
+%{_libdir}/libdruntime-ldc-debug.so.63
 
 %files druntime-devel
 %{_includedir}/d/ldc
@@ -213,10 +213,10 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %files phobos
 %doc runtime/phobos/LICENSE_1_0.txt
-%{_libdir}/libphobos-ldc.so.2.0.62
-%{_libdir}/libphobos-ldc.so.62
-%{_libdir}/libphobos-ldc-debug.so.2.0.62
-%{_libdir}/libphobos-ldc-debug.so.62
+%{_libdir}/libphobos-ldc.so.2.0.63
+%{_libdir}/libphobos-ldc.so.63
+%{_libdir}/libphobos-ldc-debug.so.2.0.63
+%{_libdir}/libphobos-ldc-debug.so.63
 
 %files phobos-devel
 %dir %{_includedir}/d
