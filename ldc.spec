@@ -28,7 +28,7 @@ Group:          Development/Languages
 # The DMD frontend in dmd/* GPL version 1 or artistic license
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
-URL:            http://www.dsource.org/projects/ldc
+URL:            https://github.com/ldc-developers/ldc
 Source0:        %{name}-%{alphatag}.tar.xz
 Source1:        %{name}-phobos-%{phobostag}.tar.xz
 Source2:        %{name}-druntime-%{druntimetag}.tar.xz
