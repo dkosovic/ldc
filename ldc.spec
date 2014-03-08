@@ -1,8 +1,8 @@
 # debug info seem not works with D compiler
-%global     snapdate        20131027
-%global     ldc_rev         c03ed8e
-%global     phobos_rev      89a2295
-%global     druntime_rev    822720b
+%global     snapdate        20130305
+%global     ldc_rev         6e908ff
+%global     phobos_rev      32fc550
+%global     druntime_rev    b20422e
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        56.%{alphatag}%{?dist}
+Release:        55.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -162,6 +162,7 @@ Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
 %setup -q -T -D -a 2 -n %{name}-%{alphatag}
 find . -type f -exec sed -i 's/\r//g' {} \;
+ sed -i 's/string(REPLACE "-Werror" "" LLVM_CXXFLAGS ${LLVM_CXXFLAGS})/#&/' CMakeLists.txt
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -234,14 +235,11 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
-* Mon Oct 28 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-56.20131027gitc03ed8e
-- Update to rev c03ed8e
+* Sat Mar 08 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-55.20131023git287e089
+- Update to rev 6e908ff
 
-* Thu Oct 24 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-55.20131023git287e089
+* Thu Oct 24 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-54.20131023git287e089
 - Update to rev 287e089
-
-* Tue Oct 22 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-54.20131022git847b7ac
-- Update to rev 847b7ac
 
 * Fri Aug 09 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-53.20130805git967b986
 - Add ExcludeArch arm
