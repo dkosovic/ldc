@@ -1,5 +1,5 @@
 # debug info seem not works with D compiler
-%global     snapdate        20130305
+%global     snapdate        20140305
 %global     ldc_rev         6e908ff
 %global     phobos_rev      32fc550
 %global     druntime_rev    b20422e
@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        55.%{alphatag}%{?dist}
+Release:        56.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -235,6 +235,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Sun Mar 09 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-56.20140305git6e908ff
+- Fix alphatag
+
 * Sat Mar 08 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-55.20131023git287e089
 - Update to rev 6e908ff
 
