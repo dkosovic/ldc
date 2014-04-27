@@ -1,8 +1,8 @@
 # debug info seem not works with D compiler
-%global     snapdate        20131027
-%global     ldc_rev         c03ed8e
-%global     phobos_rev      89a2295
-%global     druntime_rev    822720b
+%global     snapdate        20140325
+%global     ldc_rev         7492d06
+%global     phobos_rev      32fc550
+%global     druntime_rev    b20422e
 %global     alphatag        %{snapdate}git%{ldc_rev}
 %global     phobostag       %{snapdate}git%{phobos_rev}
 %global     druntimetag     %{snapdate}git%{druntime_rev}
@@ -11,7 +11,7 @@
 # Use the following commands to generate the tarball:
 # git clone https://github.com/ldc-developers/ldc.git ldc
 # cd ldc; git submodule update -i
-# git rev-parse --short HEAD            -> for ldc_rev
+# git rev-parse --short HEAD		            -> for ldc_rev
 # git checkout %%ldc_rev
 # git archive --prefix=ldc-%%{alphatag}/ HEAD --format=tar | xz > ../ldc-%%{alphatag}.tar.xz
 # cd runtime/druntime;  git rev-parse --short HEAD -> for druntime_rev
@@ -21,7 +21,7 @@
 
 Name:           ldc
 Version:        2
-Release:        54.%{alphatag}%{?dist}
+Release:        58.%{alphatag}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -34,6 +34,9 @@ Source1:        %{name}-phobos-%{phobostag}.tar.xz
 Source2:        %{name}-druntime-%{druntimetag}.tar.xz
 Source3:        macros.%{name}
 
+# https://github.com/ldc-developers/ldc/issues/116
+ExcludeArch:    %{arm}
+
 BuildRequires:  llvm-devel >= 3.0
 BuildRequires:  libconfig, libconfig-devel
 BuildRequires:  cmake
@@ -42,7 +45,7 @@ BuildRequires:  llvm-static
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 
-Requires:       ldc-druntime-devel ldc-phobos-devel
+Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
@@ -69,6 +72,24 @@ des personnes pour aider au test et amélioré LDC pour ces plateformes.
 LDC compile déjà une grande quantité de code D, mais doit encore être considéré
 en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
 implémenter.
+
+%package        config
+Summary:        Config file for ldc
+Group:          Development/Tools
+License:        Boost
+Requires:       %{name} =  %{version}-%{release}
+BuildArch:      noarch
+
+%description config
+Provide configuration file to customize ldc. As:
+- default search path for lib and include files
+- default ldc flag …
+
+
+%description config -l fr
+Fournit les fichiers de configuration pour personaliser ldc. Comme:
+- Le chemin par défaut pour rechercher lib et les fichier d'inclusion
+- les paramètres par défaut utilisé par ldc …
 
 %package        druntime
 Summary:        Runtime library for D
@@ -159,6 +180,7 @@ Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 %setup -q -T -D -a 1 -n %{name}-%{alphatag}
 %setup -q -T -D -a 2 -n %{name}-%{alphatag}
 find . -type f -exec sed -i 's/\r//g' {} \;
+ sed -i 's/string(REPLACE "-Werror" "" LLVM_CXXFLAGS ${LLVM_CXXFLAGS})/#&/' CMakeLists.txt
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -172,7 +194,8 @@ geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
 find import  -name "*.di" | xargs sed -i "s|%{_buildir}/%{name}-%{alphatag}/runtime/druntime/src|/usr/include/d|g"
 
 %install
-mkdir -p %{buildroot}/%{_sysconfdir}/rpm
+mkdir -p %{buildroot}/%{_sysconfdir}/
+mkdir -p %{buildroot}/%{_rpmconfigdir}/macros.d/
 mkdir -p %{buildroot}/%{_includedir}/d/ldc
 mkdir -p %{buildroot}/%{_datadir}/geany/tags/
 
@@ -180,7 +203,7 @@ make %{?_smp_mflags} install DESTDIR=%{buildroot}
 find %{buildroot}/%{_includedir}/d/core -name "*.di" | xargs sed -i "s|\(// D import file generated from \)'/.*/%{name}-%{alphatag}/runtime/druntime/src/\(.*\)'|\1'\2'|"
 
 # macros for D package
-install --mode=0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rpm/macros.ldc
+install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 # geany tags
 install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
@@ -190,13 +213,16 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %postun phobos      -p  /sbin/ldconfig
 
 %files
-%doc LICENSE README
-%config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
-%config(noreplace)  %{_sysconfdir}/ldc2.conf
-%config             %{_sysconfdir}/rpm/macros.ldc
-%config             %{_sysconfdir}/bash_completion.d/ldc
+%doc LICENSE README.md
 %{_bindir}/ldc2
 %{_bindir}/ldmd2
+
+%files config
+%config(noreplace)  %{_sysconfdir}/ldc2.rebuild.conf
+%config(noreplace)  %{_sysconfdir}/ldc2.conf
+%config             %{_rpmconfigdir}/macros.d/macros.ldc
+%config             %{_sysconfdir}/bash_completion.d/ldc
+
 
 %files druntime
 %doc runtime/druntime/LICENSE runtime/druntime/README
@@ -231,20 +257,33 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
-* Mon Oct 28 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-54.20131027gitc03ed8e
-- Update to rev c03ed8e
+* Sun Apr 27 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-58.20140325git7492d06
+- update to latest rev
 
-* Thu Oct 24 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-53.20131023git287e089
+* Mon Mar 10 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-57.20140305git6e908ff
+- Add config sub-package
+- put rpm macro into %%{_rpmconfigdir}/macros.d
+
+* Sun Mar 09 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-56.20140305git6e908ff
+- Fix alphatag
+
+* Sat Mar 08 2014 jonathan MERCIER <bioinfornatics@gmail.com> - 2-55.20131023git287e089
+- Update to rev 6e908ff
+
+* Thu Oct 24 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-54.20131023git287e089
 - Update to rev 287e089
 
-* Mon Oct 21 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-52.20131020git1d7fd40
-- Update to rev 1d7fd40
+* Fri Aug 09 2013 Jonathan MERCIER <bioinfornatics@gmail.com> - 2-53.20130805git967b986
+- Add ExcludeArch arm
 
-* Mon Aug 05 2013 "Jonathan Mercier" <"Jonathan Mercier at gmail dot org"> - 2-51.20130805git967b986
+* Mon Aug 05 2013 "Jonathan Mercier" <"Jonathan Mercier at gmail dot org"> - 2-52.20130805git967b986
 - Update to rev 967b986
 
-* Sun Aug 04 2013 "Jonathan Mercier" <"Jonathan Mercier at gmail dot org"> - 2-50.20130730git07cb4cc
+* Sun Aug 04 2013 "Jonathan Mercier" <"Jonathan Mercier at gmail dot org"> - 2-51.20130730git07cb4cc
 - Update to rev 07cb4cc
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2-50.20130623git9facd25
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Wed Jun 26 2013 Jonathan MERCIER <bioinfornatics at fedoraproject dot org> - 2-49.20130623git9facd25
 - Update url  and add macros.ldc into git repo
