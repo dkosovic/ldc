@@ -4,8 +4,8 @@
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
 
 Name:           ldc
-Version:        0.15.0
-Release:        63%{?dist}
+Version:        0.15.1
+Release:        64%{?dist}
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -14,11 +14,11 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%{version}-alpha1-src.tar.gz
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{version}/%{name}-%{version}-src.tar.gz
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
-ExcludeArch:    %{arm}
+# ExcludeArch:    %{arm}
 
 BuildRequires:  llvm-devel >= 3.0
 BuildRequires:  libconfig, libconfig-devel
@@ -159,7 +159,7 @@ Enable autocompletion for phobos library in geany (IDE)
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
 %prep
-%setup -q -n %{name}-%{version}-alpha1-src
+%setup -q -n %{name}-%{version}-src
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -238,6 +238,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Tue Jan 27 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.1-64
+- update to 0.15.1
+
 * Thu Oct 30 2014 Jonathan MERCIER <bioinfornatics@gmail.com> - 0.15.0-alpha1-63
 - update to 0.15 alpaha 1 release
 - enable epoch to follow upstream version number 2 become 0.15
