@@ -27,8 +27,9 @@ BuildRequires:  gc, gcc-c++, gcc
 BuildRequires:  llvm-static
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
+BuildRequires:  libedit-devel
 
-Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config
+Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config, libedit
 
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
