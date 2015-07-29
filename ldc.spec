@@ -4,8 +4,13 @@
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
 
 Name:           ldc
+<<<<<<< HEAD
 Version:        0.15.1
 Release:        65%{?dist}
+=======
+Version:        %ldc_version.beta2
+Release:        71%{?dist}
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -14,7 +19,11 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
+<<<<<<< HEAD
 Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%{version}-src.tar.gz
+=======
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%ldc_version-beta2-src.tar.gz
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
@@ -29,10 +38,14 @@ BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
 
+<<<<<<< HEAD
 Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit
 
 ExcludeArch:    %{arm}
 
+=======
+Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
 frontend and uses LLVM as backend. LLVM provides a fast and modern backend for
@@ -162,7 +175,11 @@ Enable autocompletion for phobos library in geany (IDE)
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
 %prep
+<<<<<<< HEAD
 %setup -q -n %{name}-%{version}-src
+=======
+%setup -q -n %{name}-%ldc_version-beta2-src
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -206,7 +223,11 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %files config
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_rpmconfigdir}/macros.d/macros.ldc
+<<<<<<< HEAD
 %config             %{_sysconfdir}/bash_completion.d/ldc
+=======
+%config             %{_datadir}/bash-completion/completions/ldc2
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 
 
 %files druntime
@@ -241,6 +262,24 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+<<<<<<< HEAD
+=======
+* Wed Jul 29 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-71
+- update to beta release 0.15.2-beta2
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.15.2.beta1-70
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1:0.15.2.beta1-69
+- Rebuilt for GCC 5 C++11 ABI change
+
+* Tue Mar 31 2015 bioinfornatics@gmail.com - 1:0.15.2.beta1-68
+- rebuild
+
+* Fri Mar 20 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta1-66
+- update to beta release 0.15.2
+
+>>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 * Sun Feb 01 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.1-65
 - update to version 0.15.1
 
