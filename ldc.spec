@@ -9,8 +9,12 @@ Version:        0.15.1
 Release:        65%{?dist}
 =======
 Version:        %ldc_version.beta2
+<<<<<<< HEAD
 Release:        71%{?dist}
 >>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
+=======
+Release:        72%{?dist}
+>>>>>>> 01337f1... add bash-completion as required
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -39,6 +43,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit
 
 ExcludeArch:    %{arm}
@@ -46,6 +51,9 @@ ExcludeArch:    %{arm}
 =======
 Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs
 >>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
+=======
+Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs bash-completion
+>>>>>>> 01337f1... add bash-completion as required
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
 frontend and uses LLVM as backend. LLVM provides a fast and modern backend for
@@ -263,7 +271,13 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 %changelog
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+* Thu Jul 30 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-72
+- add bash-completion as required
+
+>>>>>>> 01337f1... add bash-completion as required
 * Wed Jul 29 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-71
 - update to beta release 0.15.2-beta2
 
