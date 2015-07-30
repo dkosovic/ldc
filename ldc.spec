@@ -24,10 +24,14 @@ Group:          Development/Languages
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
 <<<<<<< HEAD
+<<<<<<< HEAD
 Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%{version}-src.tar.gz
 =======
 Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%ldc_version-beta2-src.tar.gz
 >>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
+=======
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_version-beta2/%{name}-%ldc_version-beta2-src.tar.gz
+>>>>>>> 134a092... add bash-completion as required
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
@@ -149,7 +153,7 @@ jobs that need to get done
 %description phobos -l fr
 Chaque module de Phobos est conforme autant que possible à la conception
 suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
-pas une religion, c'est un langage de programmation, et il reconnaît que,
+pas une religion, c'est un language de programmation, et il reconnaît que,
 parfois, les objectifs sont contradictoires et contre-productif dans certaines
 situations, et les programmeurs ont travail qui doit être effectué.
 
