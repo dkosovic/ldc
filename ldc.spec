@@ -5,8 +5,8 @@
 %global ldc_version  0.15.2
 
 Name:           ldc
-Version:        %ldc_version.beta1
-Release:        70%{?dist}
+Version:        %ldc_version.beta2
+Release:        72%{?dist}
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -15,7 +15,7 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%ldc_version-beta1-src.tar.gz
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_version-beta2/%{name}-%ldc_version-beta2-src.tar.gz
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
@@ -29,8 +29,9 @@ BuildRequires:  llvm-static
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
+BuildRequires:  bash-completion
 
-Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit
+Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs bash-completion
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
 frontend and uses LLVM as backend. LLVM provides a fast and modern backend for
@@ -126,7 +127,7 @@ jobs that need to get done
 %description phobos -l fr
 Chaque module de Phobos est conforme autant que possible à la conception
 suivante objectifs. Ce sont des objectifs plutôt que des exigences car D n'est
-pas une religion, c'est un langage de programmation, et il reconnaît que,
+pas une religion, c'est un language de programmation, et il reconnaît que,
 parfois, les objectifs sont contradictoires et contre-productif dans certaines
 situations, et les programmeurs ont travail qui doit être effectué.
 
@@ -160,7 +161,7 @@ Enable autocompletion for phobos library in geany (IDE)
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
 %prep
-%setup -q -n %{name}-%ldc_version-beta1-src
+%setup -q -n %{name}-%ldc_version-beta2-src
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -171,7 +172,6 @@ pushd build
               -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d           \
               -DSYSCONF_INSTALL_DIR:PATH=%{_sysconfdir}             \
               -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix}                \
-              -DCMAKE_BUILD_TYPE=Debug                 \
               --enable-optimized ..
     make %{?_smp_mflags} VERBOSE=2
 popd
@@ -204,7 +204,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %files config
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_rpmconfigdir}/macros.d/macros.ldc
-%config             %{_sysconfdir}/bash_completion.d/ldc2
+%config             %{_datadir}/bash-completion/completions/ldc2
 
 
 %files druntime
@@ -239,6 +239,12 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Thu Jul 30 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-72
+- add bash-completion as required
+
+* Wed Jul 29 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-71
+- update to beta release 0.15.2-beta2
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.15.2.beta1-70
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
