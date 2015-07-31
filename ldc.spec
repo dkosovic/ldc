@@ -45,6 +45,7 @@ BuildRequires:  llvm-static
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
+BuildRequires:  bash-completion
 
 <<<<<<< HEAD
 <<<<<<< HEAD
