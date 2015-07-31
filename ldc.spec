@@ -2,19 +2,11 @@
 %global dmdfe_minor 0
 %global dmdfe_bump  66
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
+%global ldc_version  0.15.2
 
 Name:           ldc
-<<<<<<< HEAD
-Version:        0.15.1
-Release:        65%{?dist}
-=======
 Version:        %ldc_version.beta2
-<<<<<<< HEAD
-Release:        71%{?dist}
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
-=======
 Release:        72%{?dist}
->>>>>>> 01337f1... add bash-completion as required
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -23,15 +15,7 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
-<<<<<<< HEAD
-<<<<<<< HEAD
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%{version}-src.tar.gz
-=======
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{name}-%{version}/%{name}-%ldc_version-beta2-src.tar.gz
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
-=======
 Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_version-beta2/%{name}-%ldc_version-beta2-src.tar.gz
->>>>>>> 134a092... add bash-completion as required
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
@@ -47,18 +31,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
 BuildRequires:  bash-completion
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit
-
-ExcludeArch:    %{arm}
-
-=======
-Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
-=======
 Requires:       ldc-druntime-devel ldc-phobos-devel ldc-config libedit clang-libs bash-completion
->>>>>>> 01337f1... add bash-completion as required
 %description
 LDC is a compiler for the D programming Language. It is based on the latest DMD
 frontend and uses LLVM as backend. LLVM provides a fast and modern backend for
@@ -188,11 +161,7 @@ Enable autocompletion for phobos library in geany (IDE)
 Active l'autocompletion pour pour la bibliothèque phobos dans geany (IDE)
 
 %prep
-<<<<<<< HEAD
-%setup -q -n %{name}-%{version}-src
-=======
 %setup -q -n %{name}-%ldc_version-beta2-src
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 # temp geany config directory for allow geany to generate tags
 mkdir geany_config
 
@@ -235,11 +204,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %files config
 %config(noreplace)  %{_sysconfdir}/ldc2.conf
 %config             %{_rpmconfigdir}/macros.d/macros.ldc
-<<<<<<< HEAD
-%config             %{_sysconfdir}/bash_completion.d/ldc
-=======
 %config             %{_datadir}/bash-completion/completions/ldc2
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 
 
 %files druntime
@@ -274,14 +239,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
 * Thu Jul 30 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-72
 - add bash-completion as required
 
->>>>>>> 01337f1... add bash-completion as required
 * Wed Jul 29 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta2-71
 - update to beta release 0.15.2-beta2
 
@@ -297,7 +257,6 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 * Fri Mar 20 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.2.beta1-66
 - update to beta release 0.15.2
 
->>>>>>> 2c9a3e7... update to beta release 0.15.2-beta2
 * Sun Feb 01 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.15.1-65
 - update to version 0.15.1
 
