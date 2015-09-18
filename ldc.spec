@@ -19,7 +19,7 @@ Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_ve
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
-# ExcludeArch:    %{arm}
+ExcludeArch:    %{arm}
 
 BuildRequires:  llvm-devel >= 3.0
 BuildRequires:  libconfig, libconfig-devel
