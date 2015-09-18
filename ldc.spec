@@ -6,7 +6,7 @@
 
 Name:           ldc
 Version:        %ldc_version.alpha2
-Release:        73%{?dist}
+Release:        76%{?dist}
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -15,7 +15,7 @@ Group:          Development/Languages
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_version-alpha2/%{name}-%ldc_version-alpha2-src.tar.gz
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%ldc_version-alpha2/%{name}-%ldc_version-alpha3-src.tar.gz
 Source3:        macros.%{name}
 
 # https://github.com/ldc-developers/ldc/issues/613
@@ -239,6 +239,15 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Fri Sep 18 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.16.0.alpha2-76
+- update to beta release 0.16.0-alpha3
+
+* Fri Sep 18 2015 Jonathan MERCIER <bioinfornatics@gmail.com>
+- update to beta release 0.16.0-alpha3
+
+* Fri Sep 18 2015 Jonathan MERCIER <bioinfornatics@gmail.com>
+- update to beta release 0.16.0-alpha3
+
 * Sun Sep 06 2015 Jonathan MERCIER <bioinfornatics@gmail.com> - 1:0.16.0.alpha2-73
 - update to release 0.16.2-alpha2
 
