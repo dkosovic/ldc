@@ -2,12 +2,12 @@
 %global dmdfe_minor 0
 %global dmdfe_bump  68
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
-%global ldc_version 0.17.2
+%global ldc_version 0.17.3
 %global root        %{name}-%ldc_version-src
 
 Name:           ldc
 Version:        %ldc_version
-Release:        3%{?dist}
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A compiler for the D programming language
 
@@ -240,6 +240,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 
 
 %changelog
+* Fri Feb 03 2017 Kalev Lember <klember@redhat.com> - 1:0.17.3-1
+- Update to 0.17.3
+
 * Mon Oct 31 2016 Kalev Lember <klember@redhat.com> - 1:0.17.2-3
 - Move ldc_arches macro to redhat-rpm-config
 
