@@ -15,7 +15,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.1.1
-Release:        2%{?pre:.%{pre}}%{?dist}
+Release:        4%{?pre:.%{pre}}%{?dist}
 Summary:        A compiler for the D programming language
 
 Group:          Development/Languages
@@ -252,8 +252,14 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
-* Mon May 15 2017 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.1.1-2
+* Thu May 25 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1:1.1.1-4
+- Rebuild llvm-4
+
+* Mon May 15 2017 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.1.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_27_Mass_Rebuild
+
+* Thu Mar 30 2017 Igor Gnatenko <ignatenko@redhat.com> - 1:1.1.1-2
+- Rebuild for LLVM4
 
 * Fri Mar 03 2017 Kalev Lember <klember@redhat.com> - 1:1.1.1-1
 - Update to 1.1.1
