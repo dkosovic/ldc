@@ -1,24 +1,23 @@
 %global dmdfe_major 2
 %global dmdfe_minor 0
-%global dmdfe_bump  71
+%global dmdfe_bump  73
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
 
-#global pre beta6
+%global pre beta2
 
 # Enable this for bootstrapping with an older version that doesn't require a
 # working D compiler to build itself
 %global bootstrap 0
-%global bootstrap_version 0.17.3
+%global bootstrap_version 0.17.4
 
 %undefine _hardened_build
 
 Name:           ldc
 Epoch:          1
-Version:        1.1.1
-Release:        4%{?pre:.%{pre}}%{?dist}
+Version:        1.3.0
+Release:        0.3%{?pre:.%{pre}}%{?dist}
 Summary:        A compiler for the D programming language
 
-Group:          Development/Languages
 # The DMD frontend in dmd/* GPL version 1 or artistic license
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
@@ -76,7 +75,6 @@ implémenter.
 
 %package        druntime
 Summary:        Runtime library for D
-Group:          Development/Tools
 License:        Boost
 Requires:       %{name}%{?_isa} =  %{epoch}:%{version}-%{release}
 
@@ -95,7 +93,6 @@ démarage/extinction, etc
 
 %package        druntime-devel
 Summary:        Support for developing D application
-Group:          Development/Tools
 Requires:       %{name}%{?_isa}  = %{epoch}:%{version}-%{release}
 Requires:       %{name}-druntime = %{epoch}:%{version}-%{release}
 
@@ -110,7 +107,6 @@ des applications en D utilisant druntime.
 
 %package        phobos
 Summary:        Standard Runtime Library
-Group:          Development/Tools
 License:        Boost
 Requires:       %{name}%{?_isa}  = %{epoch}:%{version}-%{release}
 Requires:       %{name}-druntime = %{epoch}:%{version}-%{release}
@@ -131,7 +127,6 @@ situations, et les programmeurs ont travail qui doit être effectué.
 
 %package        phobos-devel
 Summary:        Support for developing D application
-Group:          Development/Tools
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       %{name}-phobos  = %{epoch}:%{version}-%{release}
 Requires:       %{name}-druntime-devel
@@ -146,7 +141,6 @@ des applications en D utilisant phobos.
 
 %package phobos-geany-tags
 Summary:        Support for enable autocompletion in geany
-Group:          Development/Tools
 Requires:       %{name} =  %{epoch}:%{version}-%{release}
 BuildArch:      noarch
 BuildRequires:  geany
@@ -252,6 +246,17 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
+* Tue Jun 13 2017 Kalev Lember <klember@redhat.com> - 1:1.3.0-0.3.beta2
+- Reduce optimization level from -O3 to work around ldc crashes
+
+* Tue Jun 13 2017 Kalev Lember <klember@redhat.com> - 1:1.3.0-0.2.beta2
+- Disable bootstrap
+
+* Tue Jun 13 2017 Kalev Lember <klember@redhat.com> - 1:1.3.0-0.1.beta2
+- Update to 1.3.0 beta2
+- Enable bootstrap
+- Update bootstrap compiler to ldc 0.17.4
+
 * Thu May 25 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1:1.1.1-4
 - Rebuild llvm-4
 
