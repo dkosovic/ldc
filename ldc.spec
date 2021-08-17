@@ -23,7 +23,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.25.1%{?pre:~%{pre}}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
@@ -38,6 +38,8 @@ Source3:        macros.%{name}
 
 # Make sure /usr/include/d is in the include search path
 Patch0:         ldc-include-path.patch
+# Don't add rpath to standard libdir
+Patch1:         ldc-no-default-rpath.patch
 
 ExclusiveArch:  %{ldc_arches}
 
@@ -240,6 +242,9 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
+* Tue Aug 17 2021 Kalev Lember <klember@redhat.com> - 1:1.25.1-2
+- Add a patch to remove rpath from ldc2.conf
+
 * Sun Feb 28 2021 Kalev Lember <klember@redhat.com> - 1:1.25.1-1
 - Update to 1.25.1
 
