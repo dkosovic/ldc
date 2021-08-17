@@ -244,6 +244,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %changelog
 * Tue Aug 17 2021 Kalev Lember <klember@redhat.com> - 1:1.25.1-2
 - Add a patch to remove rpath from ldc2.conf
+- Don't use -w (treat warnings as errors) in default _d_optflags
 
 * Sun Feb 28 2021 Kalev Lember <klember@redhat.com> - 1:1.25.1-1
 - Update to 1.25.1
