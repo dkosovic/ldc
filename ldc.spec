@@ -1,24 +1,26 @@
 %global dmdfe_major 2
 %global dmdfe_minor 0
-%global dmdfe_bump  82
+%global dmdfe_bump  90
 %global dmdfe       %dmdfe_major.%dmdfe_minor.%dmdfe_bump
 
-#global pre beta2
+#global pre beta1
 
 %global llvm_version 6.0
 
 # Enable this for bootstrapping with an older version that doesn't require a
 # working D compiler to build itself
-%global bootstrap 1
+%global bootstrap 0
 %global bootstrap_version 0.17.6
+
+%global bootstrap_stage2 1
 
 %undefine _hardened_build
 
 Name:           ldc
 Epoch:          1
-Version:        1.12.0
-Release:        1%{?pre:.%{pre}}%{?dist}
-Summary:        A compiler for the D programming language
+Version:        1.20.1%{?pre:~%{pre}}
+Release:        1%{?dist}~bootstrap
+Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
@@ -42,8 +44,8 @@ BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  libedit-devel
 BuildRequires:  bash-completion
-BuildRequires:  llvm%{llvm_version}-devel
-BuildRequires:  llvm%{llvm_version}-static
+BuildRequires:  llvm%{?llvm_version}-devel
+BuildRequires:  llvm%{?llvm_version}-static
 
 Requires:       %{name}-druntime-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       %{name}-jit-devel%{?_isa} = %{epoch}:%{version}-%{release}
@@ -54,30 +56,11 @@ Requires:       gcc
 Obsoletes:      ldc-config < 1:1.1.0
 
 %description
-LDC is a compiler for the D programming Language. It is based on the latest DMD
-frontend and uses LLVM as backend. LLVM provides a fast and modern backend for
-high quality code generation. LDC is released under a BSD license with
-exceptions for the DMD frontend and code from GDC.
-The development takes place mostly on x86-32 and x86-64 Linux and that is where
-LDC works best. Support for other platforms and architectures is under
-development, but we are still looking for people to help test and adjust LDC
-for those platforms!
-LDC already compiles a lot of D code, but should still be considered beta
-quality. Take a look at the tickets to get a better impression on what still
-needs to be implemented.
+LDC is a portable compiler for the D programming language with modern
+optimization and code generation capabilities.
 
-%description -l fr_FR
-LDC est un compiler pour le langage de programmation D. Il est basé sur la
-dernière, interface de DMD et utilise LLVM comme moteur. LLVM est un moteur
-rapide pour la génération de code de haute qualité. LDC est publié sous licence
-BSD avec des exception pour l'interfaces DMD et le code provenant de GDC.
-Le développement se concentre surtout pour les architectures x86 et x86_64
-sur Linux et c'est pour cela que LDC travaille bien. le support pour les autres
-architectures et plateformes sont en développement, mais nous recherchons
-des personnes pour aider au test et amélioré LDC pour ces plateformes.
-LDC compile déjà une grande quantité de code D, mais doit encore être considéré
-en qualité bêta. Regarder les tickets pour ressentir ce qui doit encore être
-implémenter.
+It uses the official DMD compiler frontend to support the latest version
+of D, and relies on the LLVM Core libraries for code generation.
 
 %package        druntime
 Summary:        Runtime library for D
@@ -179,8 +162,21 @@ mkdir geany_config
 tar xf %{SOURCE1}
 mkdir build-bootstrap
 pushd build-bootstrap
-cmake -DLLVM_CONFIG:PATH=%{_bindir}/llvm-config-%{llvm_version}-%{__isa_bits} \
+cmake -DLLVM_CONFIG:PATH=%{_bindir}/llvm-config-%{?llvm_version:%{llvm_version}-}%{__isa_bits} \
       ../%{name}-%{bootstrap_version}-src
+make %{?_smp_mflags}
+popd
+%endif
+
+%if 0%{?bootstrap_stage2}
+tar xf %{SOURCE0}
+mkdir build-bootstrap2
+pushd build-bootstrap2
+cmake -DLLVM_CONFIG:PATH=%{_bindir}/llvm-config-%{?llvm_version:%{llvm_version}-}%{__isa_bits} \
+%if 0%{?bootstrap}
+      -DD_COMPILER:PATH=`pwd`/../build-bootstrap/bin/ldmd2  \
+%endif
+      ../%{name}-%{version}%{?pre:-%{pre}}-src
 make %{?_smp_mflags}
 popd
 %endif
@@ -191,9 +187,10 @@ pushd build
               -DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/d           \
               -DSYSCONF_INSTALL_DIR:PATH=%{_sysconfdir}             \
               -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix}                \
-              -DLLVM_CONFIG:PATH=%{_bindir}/llvm-config-%{llvm_version}-%{__isa_bits} \
-%if 0%{?bootstrap}
-              -DD_COMPILER:PATH=`pwd`/../build-bootstrap/bin/ldmd2  \
+              -DBASH_COMPLETION_COMPLETIONSDIR:PATH=%{_datadir}/bash-completion/completions \
+              -DLLVM_CONFIG:PATH=llvm-config-%{?llvm_version:%{llvm_version}-}%{__isa_bits} \
+%if 0%{?bootstrap_stage2}
+              -DD_COMPILER:PATH=`pwd`/../build-bootstrap2/bin/ldmd2  \
 %endif
               ..
     make %{?_smp_mflags} VERBOSE=2
@@ -252,6 +249,7 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %files druntime-devel
 %{_includedir}/d/ldc
 %{_includedir}/d/core
+%{_includedir}/d/object.d
 %{_libdir}/libdruntime-ldc-debug-shared.so
 %{_libdir}/libdruntime-ldc-shared.so
 
@@ -273,6 +271,46 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_datadir}/geany/tags/phobos.d.tags
 
 %changelog
+* Sat Mar 07 2020 Kalev Lember <klember@redhat.com> - 1:1.20.1-1
+- Update to 1.20.1
+
+* Sat Feb 15 2020 Kalev Lember <klember@redhat.com> - 1:1.20.0-2
+- Update to 1.20.0 final release
+- Build with llvm 10.0
+
+* Tue Feb 11 2020 Kalev Lember <klember@redhat.com> - 1:1.20.0-1.beta1
+- Update to 1.20.0 beta1
+
+* Mon Feb 10 2020 Kalev Lember <klember@redhat.com> - 1:1.19.0-1
+- Update to 1.19.0
+- Build with llvm 9.0
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.15.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.15.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Mon Apr 08 2019 Kalev Lember <klember@redhat.com> - 1:1.15.0-1
+- Update to 1.15.0
+- Build with llvm 8.0
+
+* Mon Feb 18 2019 Kalev Lember <klember@redhat.com> - 1:1.14.0-3
+- Disable bootstrap
+
+* Mon Feb 18 2019 Kalev Lember <klember@redhat.com> - 1:1.14.0-2
+- Enable bootstrap
+
+* Mon Feb 18 2019 Kalev Lember <klember@redhat.com> - 1:1.14.0-1
+- Update to 1.14.0
+- Add stage2 bootstrap for doing stage2 build with the same compiler
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.12.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Sun Oct 14 2018 Kalev Lember <klember@redhat.com> - 1:1.12.0-2
+- Disable bootstrap
+
 * Sat Oct 13 2018 Kalev Lember <klember@redhat.com> - 1:1.12.0-1
 - Update to 1.12.0
 - Enable bootstrap
