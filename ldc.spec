@@ -33,6 +33,7 @@ Source1:        https://github.com/ldc-developers/ldc/releases/download/v%{boots
 Source3:        macros.%{name}
 
 ExclusiveArch:  %{ldc_arches} aarch64
+ExcludeArch:    ppc64le
 
 %if ! 0%{?bootstrap}
 BuildRequires:  ldc
