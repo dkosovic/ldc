@@ -1,15 +1,11 @@
 #global llvm_version 14
 %global soversion 100
 
-%ifarch ppc64le
-%define debug_package %{nil}
-%endif
-
 # bootstrapping is used for updating LDC to a newer version: it relies on an
 # older, working LDC compiler in the buildroot, which is then used to build a
 # new intermediate LDC version, and finally this in turn is used to build the
 # final compiler that gets installed in the rpm.
-%bcond_without bootstrap
+%bcond_with bootstrap
 
 %undefine _cmake_shared_libs
 %undefine _hardened_build
@@ -18,7 +14,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.30.0%{?pre:~%{pre}}
-Release:        3%{?dist}~bootstrap~ppc64le
+Release:        3%{?dist}
 Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
@@ -26,8 +22,6 @@ Summary:        LLVM D Compiler
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
 Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{version}%{?pre:-%{pre}}/%{name}-%{version}%{?pre:-%{pre}}-src.tar.gz
-Source1:        ldc-1.8.0-1.fc29.ppc64le.tar.xz
-Source2:        llvm4.0-libs-4.0.1-6.fc29.ppc64le.tar.xz
 Source3:        macros.%{name}
 
 # Make sure /usr/include/d is in the include search path
@@ -42,10 +36,7 @@ BuildRequires:  cmake
 BuildRequires:  gc
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
-%ifarch ppc64le
-%else
 BuildRequires:  ldc
-%endif
 BuildRequires:  libconfig-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libedit-devel
@@ -101,10 +92,6 @@ Enable autocompletion for phobos library in geany (IDE)
 mkdir geany_config
 
 %build
-%ifarch ppc64le
-tar xvf %{SOURCE1}
-tar xvf %{SOURCE2}
-%else
 # This package appears to be failing because links to the LLVM plugins
 # are not installed which results in the tools not being able to
 # interpret the .o/.a files.  Disable LTO for now
@@ -132,18 +119,12 @@ popd
        %{nil}
 
 %cmake_build
-%endif
 
 # generate geany tags
 geany -c geany_config -g phobos.d.tags $(find runtime/phobos/std -name "*.d")
 
 %install
-%ifarch ppc64le
-cp -a ldc-1.8.0-1.fc29.ppc64le/* %{buildroot}
-cp -a llvm4.0-libs-4.0.1-6.fc29.ppc64le/* %{buildroot}
-%else
 %cmake_install
-%endif
 
 # macros for D package
 mkdir -p %{buildroot}/%{_rpmconfigdir}/macros.d/
@@ -163,13 +144,6 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_bindir}/ldc-profdata
 %{_bindir}/ldc-prune-cache
 %{_rpmconfigdir}/macros.d/macros.ldc
-%ifarch ppc64le
-%{_includedir}/d/
-%{_libdir}/libdruntime-ldc-debug-shared.so
-%{_libdir}/libdruntime-ldc-shared.so
-%{_libdir}/libphobos2-ldc-debug-shared.so
-%{_libdir}/libphobos2-ldc-shared.so
-%else
 %dir %{_prefix}/lib/ldc
 %dir %{_prefix}/lib/ldc/%{_target_platform}
 %dir %{_prefix}/lib/ldc/%{_target_platform}/include
@@ -183,7 +157,6 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %{_libdir}/libphobos2-ldc-debug-shared.so
 %{_libdir}/libphobos2-ldc.a
 %{_libdir}/libphobos2-ldc-shared.so
-%endif
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/ldc2
@@ -191,24 +164,10 @@ install -m0644 phobos.d.tags %{buildroot}/%{_datadir}/geany/tags/
 %files libs
 %license runtime/druntime/LICENSE.txt
 %license runtime/phobos/LICENSE_1_0.txt
-%ifarch ppc64le
-%doc %{_datadir}/doc/ldc-druntime/README
-%doc %{_datadir}/doc/ldc-druntime/README.md
-%license %{_datadir}/licenses/ldc-druntime/LICENSE
-%license %{_datadir}/licenses/ldc-phobos/LICENSE_1_0.txt
-%license %{_datadir}/licenses/llvm4.0-libs/LICENSE.TXT
-%{_sysconfdir}/ld.so.conf.d/llvm4.0-ppc64le.conf
-%{_libdir}/llvm4.0/
-%{_libdir}/libdruntime-ldc-debug-shared.so.*
-%{_libdir}/libdruntime-ldc-shared.so.*
-%{_libdir}/libphobos2-ldc-debug-shared.so.*
-%{_libdir}/libphobos2-ldc-shared.so.*
-%else
 %{_libdir}/libdruntime-ldc-debug-shared.so.%{soversion}*
 %{_libdir}/libdruntime-ldc-shared.so.%{soversion}*
 %{_libdir}/libphobos2-ldc-debug-shared.so.%{soversion}*
 %{_libdir}/libphobos2-ldc-shared.so.%{soversion}*
-%endif
 
 %files phobos-geany-tags
 %{_datadir}/geany/tags/phobos.d.tags
