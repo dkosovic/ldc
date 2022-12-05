@@ -5,7 +5,7 @@
 # older, working LDC compiler in the buildroot, which is then used to build a
 # new intermediate LDC version, and finally this in turn is used to build the
 # final compiler that gets installed in the rpm.
-%bcond_without bootstrap
+%bcond_with bootstrap
 
 %undefine _cmake_shared_libs
 %undefine _hardened_build
@@ -14,7 +14,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.30.0%{?pre:~%{pre}}
-Release:        3%{?dist}~bootstrap
+Release:        3%{?dist}
 Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
