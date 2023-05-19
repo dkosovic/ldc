@@ -17,7 +17,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.32.2%{?pre:~%{pre}}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
@@ -158,6 +158,9 @@ install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 %{_libdir}/libphobos2-ldc-shared.so.%{soversion}*
 
 %changelog
+* Fri May 19 2023 Kalev Lember <klember@redhat.com> - 1:1.32.2-2
+- Rebuild for llvm 15 on EPEL 8 and 9
+
 * Sun May 14 2023 Kalev Lember <klember@redhat.com> - 1:1.32.2-1
 - Update to 1.32.2
 
