@@ -17,7 +17,7 @@
 Name:           ldc
 Epoch:          1
 Version:        1.32.2%{?pre:~%{pre}}
-Release:        1%{?dist}
+Release:        1%{?dist}~bootstrap
 Summary:        LLVM D Compiler
 
 # The DMD frontend in dmd/* GPL version 1 or artistic license
@@ -126,6 +126,9 @@ popd
 mkdir -p %{buildroot}/%{_rpmconfigdir}/macros.d/
 install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 
+# Temporarily include llvm 14 libraries in order to switch to llvm 15
+cp -a %{_libdir}/libLLVM-14*.so %{buildroot}%{_libdir}/
+
 %files
 %license LICENSE
 %doc README.md
@@ -152,6 +155,7 @@ install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 
 %files libs
 %license runtime/phobos/LICENSE_1_0.txt
+%{_libdir}/libLLVM-14*.so
 %{_libdir}/libdruntime-ldc-debug-shared.so.%{soversion}*
 %{_libdir}/libdruntime-ldc-shared.so.%{soversion}*
 %{_libdir}/libphobos2-ldc-debug-shared.so.%{soversion}*
