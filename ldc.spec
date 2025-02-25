@@ -76,7 +76,7 @@ optimization and code generation capabilities.
 This package contains the Phobos D standard library and the D runtime library.
 
 %prep
-%autosetup -n %{name}-%{version_no_tilde}-src -p1
+%autosetup -n %{name}-%{version}-src -p1
 
 # Remove bundled zlib
 rm -fr runtime/phobos/etc/c/zlib
