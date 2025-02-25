@@ -1,5 +1,5 @@
 %if 0%{?rhel}
-#global llvm_version 15
+%global llvm_version 14
 %else
 #global llvm_version 19
 %endif
@@ -28,14 +28,14 @@ Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{versi
 Source3:        macros.%{name}
 
 # Make sure /usr/include/d is in the include search path
-Patch:          ldc-include-path.patch
+Patch0:          ldc-include-path.patch
 # Don't add rpath to standard libdir
-Patch:          ldc-no-default-rpath.patch
+Patch1:          ldc-no-default-rpath.patch
 %if 0%{?rhel} && 0%{?rhel} <= 9
 # Keep on using ld.gold on RHEL 8 and 9 where using ldc with ld.bfd breaks gtkd
 # and leads to crashing tilix.
 # https://bugzilla.redhat.com/show_bug.cgi?id=2134875
-Patch:          0001-Revert-Linux-Don-t-default-to-ld.gold-linker.patch
+Patch2:          0001-Revert-Linux-Don-t-default-to-ld.gold-linker.patch
 %endif
 
 ExclusiveArch:  %{ldc_arches} ppc64le
@@ -152,8 +152,8 @@ install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 %{_libdir}/libphobos2-ldc-shared.so.%{soversion}*
 
 %changelog
-* Fri Jan 17 2025 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.40.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+* Fri Jan 17 2025 Kalev Lember <klember@redhat.com> - 1:1.40.0-3
+- Go back to building with llvm 14 on EPEL
 
 * Wed Dec 18 2024 Kalev Lember <klember@redhat.com> - 1:1.40.0-2
 - Drop unused gc build dep
