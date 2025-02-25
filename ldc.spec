@@ -1,5 +1,5 @@
 %if 0%{?rhel}
-%global llvm_version 14
+%global llvm_version 15
 %else
 #global llvm_version 19
 %endif
@@ -153,7 +153,7 @@ install --mode=0644 %{SOURCE3} %{buildroot}%{_rpmconfigdir}/macros.d/macros.ldc
 
 %changelog
 * Fri Jan 17 2025 Kalev Lember <klember@redhat.com> - 1:1.40.0-3
-- Go back to building with llvm 14 on EPEL
+- Add numbers back to patches for older build system
 
 * Wed Dec 18 2024 Kalev Lember <klember@redhat.com> - 1:1.40.0-2
 - Drop unused gc build dep
