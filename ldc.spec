@@ -24,7 +24,7 @@ Summary:        LLVM D Compiler
 # The files gen/asmstmt.cpp and gen/asm-*.hG PL version 2+ or artistic license
 License:        BSD
 URL:            https://github.com/ldc-developers/ldc
-Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{version}/%{name}-%{version}-src.tar.g
+Source0:        https://github.com/ldc-developers/ldc/releases/download/v%{version}/%{name}-%{version}-src.tar.gz
 Source3:        macros.%{name}
 
 # Make sure /usr/include/d is in the include search path
