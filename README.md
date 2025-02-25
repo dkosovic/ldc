@@ -14,7 +14,7 @@ git clone https://github.com/dkosovic/ldc.git
 mv ldc/* .
 
 version=`grep Version: ldc.spec | awk '{ print $2 }'`
-source=`grep Source0: ldc.spec | awk '{print $2}' | sed "s/%{version_no_tilde}/$version/g"`
+source=`grep Source0: ldc.spec | awk '{print $2}' | sed "s/%{version}/$version/g"`
 
 curl -OL $source
 ```
