@@ -1,0 +1,37 @@
+### Building on Fedora Copr
+
+Select **Custom** for the source type.
+
+Copy and paste the following script into the custom script text box:
+
+```sh
+#! /bin/sh
+
+set -x # verbose output
+set -e # fail the whole script if some command fails
+                 
+git clone https://github.com/dkosovic/ldc.git
+mv ldc/* .
+
+version=`grep Version: ldc.spec | awk '{ print $2 }'`
+source=`grep Source0: ldc.spec | awk '{print $2}' | sed "s/%{version_no_tilde}/$version/g"`
+
+curl -OL $source
+```
+
+Copy and paste the following into the build dependencies field:
+```
+git
+bash-completion
+cmake
+gcc
+gcc-c++
+ldc
+libconfig-devel
+libcurl-devel
+libedit-devel
+llvm14-devel
+llvm14-static
+make
+zlib-devel
+```
