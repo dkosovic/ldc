@@ -30,8 +30,8 @@ ldc
 libconfig-devel
 libcurl-devel
 libedit-devel
-llvm14-devel
-llvm14-static
+llvm15-devel
+llvm15-static
 make
 zlib-devel
 ```
