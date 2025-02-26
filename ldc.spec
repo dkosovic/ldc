@@ -1,5 +1,5 @@
 %if 0%{?rhel}
-%global llvm_version 15
+#global llvm_version 15
 %else
 #global llvm_version 19
 %endif
